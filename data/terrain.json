@@ -1,0 +1,16 @@
+{
+  "rng": {
+    "plains": 3,
+    "forest": 2,
+    "mountains": 1
+  },
+  "plains": {
+    "char": "_"
+  },
+  "forest": {
+    "char": "T"
+  },
+  "mountains": {
+    "char": "^"
+  }
+}

@@ -1,0 +1,8 @@
+# user
+.vscode/
+
+# libraries
+node_modules/
+
+# build
+dist/

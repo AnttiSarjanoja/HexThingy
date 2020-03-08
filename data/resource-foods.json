@@ -1,0 +1,13 @@
+{
+  "debugChar": "%",
+  "rng": {
+    "fruits": 2,
+    "cattle": 2,
+    "game": 3,
+    "fish": 3,
+    "sheep": 2,
+    "wheat": 2,
+    "rice": 1,
+    "wine": 1
+  }
+}
