@@ -4,10 +4,13 @@
     "fruits": 2,
     "cattle": 2,
     "game": 3,
-    "fish": 3,
+    "fish": 1,
+    "clams": 1,
     "sheep": 2,
     "wheat": 2,
     "rice": 1,
-    "wine": 1
+    "wine": 1,
+    "oasis": 1,
+    "ambrosia": 0
   }
 }

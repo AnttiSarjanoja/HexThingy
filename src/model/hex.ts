@@ -3,6 +3,7 @@ import { Warrior } from './warrior'
 
 type Resource = {
   type: string
+  name: string
   char: string
 }
 

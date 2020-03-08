@@ -1,16 +1,83 @@
 {
   "rng": {
-    "plains": 3,
-    "forest": 2,
-    "mountains": 1
+    "plains": 0,
+    "forest": 3,
+    "mountains": 1,
+    "swamp": 1,
+    "desert": 1
   },
   "plains": {
-    "char": "_"
+    "char": "_",
+    "color": "#9f3",
+    "resources": {
+      "rng": {
+        "foods": 7,
+        "strategic": 3,
+        "riches": 2,
+        "powers": 1
+      },
+      "foods": ["wheat", "rice", "game", "cattle", "pigs", "sheep", "wine"],
+      "strategic": ["copper", "megafauna"],
+      "riches": ["silver"],
+      "powers": ["lead", "mercury", "spirits", "god-ivory"]
+    }
+  },
+  "desert": {
+    "char": ".",
+    "color": "#ff9",
+    "resources": {
+      "rng": {
+        "foods": 1,
+        "riches": 1,
+        "powers": 2,
+        "strategic": 1
+      },
+      "foods": ["oasis"],
+      "strategic": ["copper"],
+      "riches": ["gems", "silver"],
+      "powers": ["crystals", "spirits", "god-ivory"]
+    }
   },
   "forest": {
-    "char": "T"
+    "char": "T",
+    "color": "#060",
+    "resources": {
+      "rng": {
+        "foods": 3,
+        "strategic": 2,
+        "riches": 1,
+        "powers": 1
+      },
+      "foods": ["pigs", "game", "fruits"],
+      "strategic": ["copper", "megafauna"],
+      "riches": ["silver"],
+      "powers": ["spirits"]
+    }
   },
   "mountains": {
-    "char": "^"
+    "char": "^",
+    "color": "#686",
+    "resources": {
+      "rng": {
+        "riches": 1,
+        "strategic": 1,
+        "powers": 1
+      },
+      "riches": ["gems", "silver"],
+      "strategic": ["copper"],
+      "powers": ["lead", "mercury", "crystals", "spirits"]
+    }
+  },
+  "swamp": {
+    "char": "~",
+    "color": "#044",
+    "resources": {
+      "rng": {
+        "foods": 1,
+        "powers": 2
+      },
+      "foods": ["fish", "clam"],
+      "powers": ["spirits", "incense"]
+    }
   }
 }

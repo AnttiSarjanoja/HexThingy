@@ -1,18 +1,29 @@
-import { Display, FOV } from 'rot-js'
+import { Display } from 'rot-js'
 // import { LOSDIST } from '../constants'
-import { colorBg, renderMks } from '../display'
+import { colorBg, renderMks, renderTerrains } from '../display'
 import { Region } from '../model/region'
-import { MID } from '../constants'
 
-export const init = (display: Display) => {
+let mode = 0
+
+export const init = (display: Display, regions: Region[]) => {
   document.getElementById('root').appendChild(display.getContainer())
   const divi = document.createElement('div')
   divi.style.whiteSpace = 'pre'
   divi.id = 'moi'
   document.getElementById('root').appendChild(divi)
+
+  document.onkeydown = checkKey
+
+  function checkKey(e: KeyboardEvent) {
+    console.debug(e.key)
+    if (e.key === 'v') {
+      mode = (mode + 1) % 2
+      render(display, regions)
+    }
+  }
 }
 
-const USE_FOV = false
+// const USE_FOV = false
 
 // const getHex = (xx: number, yy: number) =>
 //   savedHexes.find(({ x, y }) => x === xx && y === yy)
@@ -35,7 +46,11 @@ const USE_FOV = false
 
 export const render = (display: Display, regions: Region[]) => {
   colorBg(display)
-  renderMks(display, regions)
+  if (!mode) {
+    renderMks(display, regions)
+  } else {
+    renderTerrains(display, regions)
+  }
   // const hexi = getHex(loc[0], loc[1]);
   // const usedDist = hexi && !!hexi.type ? LOSDIST : 1;
   // if (USE_FOV) {

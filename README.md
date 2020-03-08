@@ -1,12 +1,11 @@
-# HexThingy (project name)
+# HexThingy (working title)
 
 Maybe a game someday.
 
 ## TODO
 
-- Different map debug modes
 - Finish world creation
-  - Better terrain forming
+  - Generate more stuff to resource lists
   - Starting locations
 - Game motor
   - Leaders and orders

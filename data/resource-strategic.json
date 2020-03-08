@@ -1,9 +1,8 @@
 {
   "debugChar": "/",
   "rng": {
-    "copper": 5,
-    "tin": 2,
-    "iron": 1,
+    "copper": 4,
+    "tin": 0,
     "horses": 2,
     "megafauna": 1
   }

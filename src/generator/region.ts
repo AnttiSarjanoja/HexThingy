@@ -1,49 +1,43 @@
-import {
-  WIDTH,
-  HEIGHT,
-  MID,
-  REGION_HEXES,
-  TOTAL,
-  REGION_MIN,
-} from '../constants'
+// TODO: Rewrite this, mostly PoC code
+
 import { RNG } from 'rot-js'
+import terrain from '../../data/terrain.json'
+import { REGION_HEXES, REGION_MIN } from '../constants'
+import { Hex } from '../model/Hex.js'
 import { Region } from '../model/region'
+import { getBeast } from './beast'
+import { insertClan, insertResource } from './hex'
 
-type Coord = [number, number]
+type Coord = { x: number; y: number }
 
-const getNeighs = ([x, y]: Coord): Coord[] =>
-  ([
-    [x - 1, y - 1],
-    [x + 1, y - 1],
-    [x - 2, y],
-    [x + 2, y],
-    [x - 1, y + 1],
-    [x + 1, y + 1],
-  ] as Coord[]).filter(
-    ([xx, yy]) => xx >= 0 && yy >= 0 && xx < WIDTH && yy < HEIGHT,
-  )
+const getNeighs = ({ x, y }: Coord): Coord[] =>
+  [
+    { x: x - 1, y: y - 1 },
+    { x: x + 1, y: y - 1 },
+    { x: x - 2, y: y },
+    { x: x + 2, y: y },
+    { x: x - 1, y: y + 1 },
+    { x: x + 1, y: y + 1 },
+  ] as Coord[]
 
 const rand = (max: number) => (RNG.getUniform() * max) | 0
 
 const not = (fn: any) => (...params: any) => !fn(...params)
 
-export const getRegions = (): Region[] => {
-  // store
-  const takenHexes = [MID]
-  const isFree = (usedHexes = takenHexes) => ([x, y]: Coord) =>
-    !usedHexes.find(([xx, yy]) => xx === x && yy === y)
+export const initRegions = (amt: number): Region[] => {
+  const taken = [{ x: 0, y: 0 }]
+  const isFree = (used = taken) => ({ x, y }: Coord) =>
+    !used.find(({ x: xx, y: yy }) => xx === x && yy === y)
 
-  const getNewHex = (taken: Coord[]): Coord => {
-    const neighs: Coord[] = taken.reduce(
-      (a, c) => [
-        ...a,
-        ...getNeighs(c).filter(isFree(takenHexes.concat(taken))),
-      ],
+  const getNewHex = (reserved: Coord[]): Coord => {
+    const neighs: Coord[] = reserved.reduce(
+      (a, c) => [...a, ...getNeighs(c).filter(isFree(taken.concat(reserved)))],
       [] as Coord[],
     )
     // NOTE: Find duplicate neighbours and copy them to emphasize choosing them
     const doubles = neighs.filter(
-      (h, i) => neighs.findIndex(hh => h[0] === hh[0] && h[1] === hh[1]) < i,
+      ({ x, y }, i) =>
+        neighs.findIndex(({ x: xx, y: yy }) => x === xx && y === yy) < i,
     )
     const usedNeighs = neighs.concat(doubles)
     return RNG.getItem(usedNeighs)
@@ -53,7 +47,7 @@ export const getRegions = (): Region[] => {
     const [randi, min] = REGION_HEXES
     const amount = rand(randi) + min
     const retVal = [hexi]
-    for (var meh = 0; meh < amount - 1; meh++) {
+    for (var i = 0; i < amount - 1; i++) {
       const newHex = getNewHex(retVal)
       if (newHex) {
         retVal.push(newHex)
@@ -61,21 +55,19 @@ export const getRegions = (): Region[] => {
         break
       }
     }
-    takenHexes.push(...retVal)
+    taken.push(...retVal)
     return retVal
   }
 
-  const findNextFree = ([x, y]: Coord): Coord => {
-    const neighs = getNeighs([x, y])
-    const frees = neighs.filter(isFree())
-    if (frees.length === 0) {
-      return findNextFree(RNG.getItem(neighs))
-    } else {
-      return RNG.getItem(frees)
-    }
+  const findNextFree = (): Coord => {
+    const neighs = taken.reduce(
+      (a, c) => [...a, ...getNeighs(c).filter(isFree(taken))],
+      [] as Coord[],
+    )
+    return RNG.getItem(neighs)
   }
 
-  const mks = [reserveRegion(MID)]
+  const mks = [reserveRegion({ x: 0, y: 0 })]
 
   const getNeighMks = (hexes: Coord[]) => {
     const neighs: Coord[] = hexes.reduce(
@@ -83,7 +75,7 @@ export const getRegions = (): Region[] => {
         ...a,
         ...getNeighs(c)
           .filter(isFree(hexes))
-          .filter(not(isFree(takenHexes))),
+          .filter(not(isFree(taken))),
       ],
       [],
     )
@@ -91,8 +83,8 @@ export const getRegions = (): Region[] => {
     return mks.find(mk => !isFree(mk)(used))
   }
 
-  while (takenHexes.length < TOTAL / 2) {
-    const generated = reserveRegion(findNextFree(MID))
+  while (mks.length < amt) {
+    const generated = reserveRegion(findNextFree())
     if (generated.length < REGION_MIN) {
       const chosen = getNeighMks(generated)
       chosen.push(...generated)
@@ -101,12 +93,105 @@ export const getRegions = (): Region[] => {
     }
   }
 
-  return mks.map(coords => ({
-    hexes: coords.map(([x, y]) => ({
+  const regions: Region[] = mks.map(coords => ({
+    hexes: coords.map(({ x, y }) => ({
       x,
       y,
       terrain: { type: 'plains', char: '_' },
     })),
     color: [rand(6) + 3, rand(6) + 3, rand(6) + 3],
   }))
+
+  const savedHexes = regions.reduce((a, c) => [...a, ...c.hexes], [] as Hex[])
+
+  const getNeighHexes = (hex: Hex) => {
+    const neighs = getNeighs(hex)
+    return savedHexes.filter(({ x, y }) =>
+      neighs.some(({ x: xx, y: yy }) => x === xx && y === yy),
+    )
+  }
+
+  const getAccessNeighHexes = (hex: Hex) =>
+    getNeighHexes(hex).filter(h => h.terrain.type === 'plains')
+
+  let notEnoughTerrainModified = true
+
+  while (notEnoughTerrainModified) {
+    const randHex = RNG.getItem(savedHexes)
+    const neighs = RNG.shuffle(getAccessNeighHexes(randHex))
+    const usedNeighs = neighs.slice(0, neighs.length - 1)
+    const trn = RNG.getWeightedValue(terrain.rng)
+    const chosen = usedNeighs.slice(0, rand(3) + 1).concat(randHex)
+
+    chosen.forEach(h => {
+      h.terrain = { type: trn, char: (terrain as any)[trn].char }
+    })
+
+    notEnoughTerrainModified =
+      savedHexes.reduce(
+        (a, c) => a + (c.terrain.type === 'plains' ? 1 : 0),
+        0,
+      ) >
+      savedHexes.length / 3
+  }
+
+  return regions
+}
+
+export const populateRegion = (region: Region) => {
+  const { hexes } = region
+
+  // Insert region beast on random hex, non-plains preferred
+  const freePlains = RNG.getItem(hexes.filter(h => h.terrain.type === 'plains'))
+  const beastHex = RNG.getItem(
+    hexes.filter(h => h.terrain.type !== 'plains').concat(freePlains || []),
+  )
+  const beast = getBeast()
+  beastHex.beast = beast
+  beastHex.resource = { type: 'undiscovered', char: '?', name: 'undiscovered' }
+
+  // Generate resources on random hexes
+  const resourceMax = hexes.length - Math.max((hexes.length / 3) | 0, 1)
+  const resourceMin = (hexes.length / 2) | 0
+  const amt = Math.min(rand(resourceMax - resourceMin) + resourceMin, 5)
+  const chosen = RNG.shuffle(hexes.filter(v => v !== beastHex)).slice(0, amt)
+
+  chosen.forEach(h => {
+    insertResource(h)
+  })
+
+  // Insert clans on region
+  const maxClans = Math.min(rand((hexes.length / 2.5) | 0), 3)
+  const isHabitable = (h: Hex) =>
+    h.resource?.name === 'foods' ||
+    h.terrain.type === 'forest' ||
+    h.terrain.type === 'plains'
+  const getInsertedClans = () => hexes.filter(h => h.clan).length
+
+  // 1) insert clans on food hexes
+  chosen
+    .filter(h => h.resource?.name === 'foods')
+    .forEach(h => {
+      if (getInsertedClans() < maxClans) {
+        insertClan(h)
+      }
+    })
+
+  // 2) insert rest of the clans into habitable resource hexes
+  if (getInsertedClans() < maxClans) {
+    hexes
+      .filter(h => !h.beast && !h.clan && isHabitable(h) && h.resource)
+      .slice(0, maxClans - getInsertedClans())
+      .forEach(h => insertClan(h))
+  }
+
+  // 3) insert rest of the into habitable hexes
+  if (getInsertedClans() < maxClans) {
+    hexes
+      .filter(h => !h.beast && !h.clan && isHabitable(h))
+      .slice(0, maxClans - getInsertedClans())
+      .forEach(h => insertClan(h))
+  }
+
+  return region
 }
