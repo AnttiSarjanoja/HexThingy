@@ -2,8 +2,8 @@ import { Clan } from './clan'
 import { Warrior } from './warrior'
 
 type Resource = {
-  type: string
-  name: string
+  type: 'foods' | 'powers' | 'riches' | 'strategic' | 'undiscovered'
+  name: string // aka subtype
   char: string
 }
 

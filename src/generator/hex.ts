@@ -7,13 +7,6 @@ import strategic from '../../data/resource-strategic.json'
 import terrain from '../../data/terrain.json'
 import { Hex } from '../model/Hex'
 
-// const resourcesRng = {
-//   foods: 3,
-//   strategic: 2,
-//   riches: 1,
-//   powers: 1,
-// }
-
 const resources = {
   foods,
   strategic,
@@ -21,21 +14,19 @@ const resources = {
   powers,
 } as Record<string, any>
 
-// const getRandResourceType = () => resources[RNG.getWeightedValue(resourcesRng)]
-
 export const insertResource = (hex: Hex) => {
   const type = RNG.getWeightedValue(
     (terrain as any)[hex.terrain.type].resources.rng,
-  )
+  ) as Hex['resource']['type']
   const subTypes = (terrain as any)[hex.terrain.type].resources[type] as any[]
   const { debugChar, rng } = resources[type] // , rng
   const usedRng = Object.fromEntries(
     Object.entries(rng).filter(([key]) => subTypes.includes(key)),
   ) as any
   hex.resource = {
-    type: RNG.getWeightedValue(usedRng),
+    type,
     char: debugChar,
-    name: type, // Just asdf
+    name: RNG.getWeightedValue(usedRng),
   }
 }
 

@@ -1,7 +1,9 @@
 // TODO: Rewrite this, mostly PoC code
 
 import { RNG } from 'rot-js'
+import regionPrefix from '../../data/region-prefix.json'
 import terrain from '../../data/terrain.json'
+import { getNeighs } from '../helpers/hex'
 import { REGION_HEXES, REGION_MIN } from '../constants'
 import { Hex } from '../model/Hex.js'
 import { Region } from '../model/region'
@@ -9,16 +11,6 @@ import { getBeast } from './beast'
 import { insertClan, insertResource } from './hex'
 
 type Coord = { x: number; y: number }
-
-const getNeighs = ({ x, y }: Coord): Coord[] =>
-  [
-    { x: x - 1, y: y - 1 },
-    { x: x + 1, y: y - 1 },
-    { x: x - 2, y: y },
-    { x: x + 2, y: y },
-    { x: x - 1, y: y + 1 },
-    { x: x + 1, y: y + 1 },
-  ] as Coord[]
 
 const rand = (max: number) => (RNG.getUniform() * max) | 0
 
@@ -29,7 +21,7 @@ export const initRegions = (amt: number): Region[] => {
   const isFree = (used = taken) => ({ x, y }: Coord) =>
     !used.find(({ x: xx, y: yy }) => xx === x && yy === y)
 
-  const getNewHex = (reserved: Coord[]): Coord => {
+  const getNewHex = (reserved: Coord[], takenNeighs: Coord[]): Coord => {
     const neighs: Coord[] = reserved.reduce(
       (a, c) => [...a, ...getNeighs(c).filter(isFree(taken.concat(reserved)))],
       [] as Coord[],
@@ -39,7 +31,10 @@ export const initRegions = (amt: number): Region[] => {
       ({ x, y }, i) =>
         neighs.findIndex(({ x: xx, y: yy }) => x === xx && y === yy) < i,
     )
-    const usedNeighs = neighs.concat(doubles)
+    const closeToTheLandMass = neighs.filter(({ x, y }) =>
+      takenNeighs.find(({ x: xx, y: yy }) => x === xx && y === yy),
+    )
+    const usedNeighs = neighs.concat(doubles).concat(closeToTheLandMass)
     return RNG.getItem(usedNeighs)
   }
 
@@ -47,8 +42,16 @@ export const initRegions = (amt: number): Region[] => {
     const [randi, min] = REGION_HEXES
     const amount = rand(randi) + min
     const retVal = [hexi]
+    const takenNeighs =
+      taken.length > 1
+        ? taken.reduce(
+            (a, c) => [...a, ...getNeighs(c).filter(isFree(taken.concat(a)))],
+            [] as Coord[],
+          )
+        : ([] as any[])
+
     for (var i = 0; i < amount - 1; i++) {
-      const newHex = getNewHex(retVal)
+      const newHex = getNewHex(retVal, takenNeighs)
       if (newHex) {
         retVal.push(newHex)
       } else {
@@ -99,7 +102,8 @@ export const initRegions = (amt: number): Region[] => {
       y,
       terrain: { type: 'plains', char: '_' },
     })),
-    color: [rand(6) + 3, rand(6) + 3, rand(6) + 3],
+    color: `#${[rand(6) + 3, rand(6) + 3, rand(6) + 3].join('')}`, // [rand(6) + 3, rand(6) + 3, rand(6) + 3],
+    name: '',
   }))
 
   const savedHexes = regions.reduce((a, c) => [...a, ...c.hexes], [] as Hex[])
@@ -141,6 +145,15 @@ export const initRegions = (amt: number): Region[] => {
 export const populateRegion = (region: Region) => {
   const { hexes } = region
 
+  // Get name
+  const trn = Object.entries(
+    hexes
+      .map(h => h.terrain.type)
+      .reduce((a, c) => ({ ...a, [c]: a[c] ? a[c] + 1 : 1 }), {} as any),
+  )
+  trn.sort((a, b) => (a[1] < b[1] ? 1 : 0))
+  region.name = `The ${RNG.getItem(regionPrefix)} ${trn[0][0]}`
+
   // Insert region beast on random hex, non-plains preferred
   const freePlains = RNG.getItem(hexes.filter(h => h.terrain.type === 'plains'))
   const beastHex = RNG.getItem(
@@ -152,7 +165,7 @@ export const populateRegion = (region: Region) => {
 
   // Generate resources on random hexes
   const resourceMax = hexes.length - Math.max((hexes.length / 3) | 0, 1)
-  const resourceMin = (hexes.length / 2) | 0
+  const resourceMin = (hexes.length / 3) | 0
   const amt = Math.min(rand(resourceMax - resourceMin) + resourceMin, 5)
   const chosen = RNG.shuffle(hexes.filter(v => v !== beastHex)).slice(0, amt)
 
@@ -161,16 +174,16 @@ export const populateRegion = (region: Region) => {
   })
 
   // Insert clans on region
-  const maxClans = Math.min(rand((hexes.length / 2.5) | 0), 3)
+  const maxClans = Math.min(rand(Math.ceil(hexes.length / 3)), 2)
   const isHabitable = (h: Hex) =>
-    h.resource?.name === 'foods' ||
+    h.resource?.type === 'foods' ||
     h.terrain.type === 'forest' ||
     h.terrain.type === 'plains'
   const getInsertedClans = () => hexes.filter(h => h.clan).length
 
   // 1) insert clans on food hexes
   chosen
-    .filter(h => h.resource?.name === 'foods')
+    .filter(h => h.resource?.type === 'foods')
     .forEach(h => {
       if (getInsertedClans() < maxClans) {
         insertClan(h)
@@ -185,7 +198,7 @@ export const populateRegion = (region: Region) => {
       .forEach(h => insertClan(h))
   }
 
-  // 3) insert rest of the into habitable hexes
+  // 3) insert rest of the clans into habitable hexes if possible
   if (getInsertedClans() < maxClans) {
     hexes
       .filter(h => !h.beast && !h.clan && isHabitable(h))

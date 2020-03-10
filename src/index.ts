@@ -1,28 +1,36 @@
 import { getDisplay } from './display'
-import { initRegions, populateRegion } from './generator/region'
-import { Hex } from './model/Hex'
+import { generateMap } from './generator/map'
+import { getNeighRegions } from './helpers/region'
 import { init, render } from './ui'
 
-// 7 * players could be good? + maybe some minimum amount
-const regions = initRegions(21).map(populateRegion)
-const savedHexes = regions.reduce((a, c) => [...a, ...c.hexes], [] as Hex[])
+const { savedHexes, regions } = generateMap(3)
 
-// NOTE: regions are generated from [0,0] so the hex coordinates must be manually configured above zero
-const minX = savedHexes.reduce((a, c) => (c.x < a ? c.x : a), 0)
-const minY = savedHexes.reduce((a, c) => (c.y < a ? c.y : a), 0)
-
-// NOTE: this usedX fix is only needed with rot-js display mouseover, can be removed when pixi.js is used
-const usedMinX = (minX + minY) % 2 === 0 ? minX : minX - 1
-
-savedHexes.forEach(h => {
-  h.x -= usedMinX
-  h.y -= minY
-})
-
-const DISPLAY = getDisplay(savedHexes)
-init(DISPLAY, regions)
-
+const DISPLAY = getDisplay(savedHexes, regions)
+init(DISPLAY, regions) // TODO: Just somehow else
 render(DISPLAY, regions)
+
 console.info(
   `Generated ${savedHexes.length} hexes and ${regions.length} regions`,
 )
+
+const startingLocationCandidates = regions.filter(
+  r => r.hexes.filter(h => h.clan).length > 1,
+)
+
+// TODO: Come up with a better word than *neigh*
+const neighRegions = getNeighRegions(savedHexes, regions)
+
+const bestStartingLocations = startingLocationCandidates
+  .slice()
+  .sort((a, b) => (neighRegions(a) > neighRegions(b) ? 0 : 1))
+  .filter((r, i, a) => {
+    // NOTE: Filter out starting locations that are next to each other (remove the latter)
+    // TODO: Reeeally needs unit testing
+    const neighs = neighRegions(r)
+    return a.every(
+      rr => rr === r || neighs.every(rrr => rr !== rrr || a.indexOf(rr) < i),
+    )
+  })
+  .slice(0, 3)
+
+console.info(`Starting locations`, ...bestStartingLocations)
