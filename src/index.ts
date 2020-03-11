@@ -6,8 +6,8 @@ import { init, render } from './ui'
 const { savedHexes, regions } = generateMap(3)
 
 const DISPLAY = getDisplay(savedHexes, regions)
-init(DISPLAY, regions) // TODO: Just somehow else
-render(DISPLAY, regions)
+init(DISPLAY, regions, savedHexes) // TODO: Just somehow else
+render(DISPLAY, regions, savedHexes)
 
 console.info(
   `Generated ${savedHexes.length} hexes and ${regions.length} regions`,

@@ -164,21 +164,28 @@ export const populateRegion = (region: Region) => {
   beastHex.resource = { type: 'undiscovered', char: '?', name: 'undiscovered' }
 
   // Generate resources on random hexes
-  const resourceMax = hexes.length - Math.max((hexes.length / 3) | 0, 1)
-  const resourceMin = (hexes.length / 3) | 0
-  const amt = Math.min(rand(resourceMax - resourceMin) + resourceMin, 5)
+  const resourceMax = hexes.length - Math.max((hexes.length / 2) | 0, 1)
+  const resourceMin = (hexes.length / 4) | 0
+  const amt = Math.min(rand(resourceMax + 1 - resourceMin) + resourceMin, 4)
   const chosen = RNG.shuffle(hexes.filter(v => v !== beastHex)).slice(0, amt)
 
   chosen.forEach(h => {
     insertResource(h)
   })
 
+  // TODO: Move clan insertion on map level - put clans mostly on regions with food
   // Insert clans on region
-  const maxClans = Math.min(rand(Math.ceil(hexes.length / 3)), 2)
   const isHabitable = (h: Hex) =>
     h.resource?.type === 'foods' ||
     h.terrain.type === 'forest' ||
     h.terrain.type === 'plains'
+
+  const clanRoll = () =>
+    hexes.filter(isHabitable).length / (hexes.length * 1.25) > RNG.getUniform()
+  const hasClan = clanRoll()
+  const isFood = chosen.some(r => r.resource?.type === 'foods') && clanRoll()
+  const maxClans = +hasClan + +isFood
+
   const getInsertedClans = () => hexes.filter(h => h.clan).length
 
   // 1) insert clans on food hexes

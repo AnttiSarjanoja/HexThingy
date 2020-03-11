@@ -1,12 +1,16 @@
 {
   "debugChar": "&",
   "rng": {
-    "crystals": 2,
-    "mercury": 2,
-    "lead": 2,
-    "spirits": 1,
-    "god-ivory": 1,
+    "crystals": 3,
+    "mercury": 3,
+    "lead": 3,
+    "spirits": 2,
     "gateway": 0,
-    "incense": 1
+    "incense": 2,
+    "bloodmoss": 3,
+    "geyssir": 2,
+    "volcano": 1,
+    "world-tree": 1,
+    "spring-of-life": 1
   }
 }

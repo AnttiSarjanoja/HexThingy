@@ -1,9 +1,13 @@
 {
   "debugChar": "/",
   "rng": {
-    "copper": 4,
-    "tin": 0,
-    "horses": 2,
-    "megafauna": 1
+    "copper": 5,
+    "coal": 4,
+    "tin": 1,
+    "horses": 1,
+    "megafauna": 1,
+    "haven": 2,
+    "venom": 1,
+    "medicines": 1
   }
 }

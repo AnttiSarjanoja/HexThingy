@@ -4,9 +4,6 @@ Maybe a game someday.
 
 ## TODO
 
-- Finish world creation
-  - Generate more stuff to resource lists
-  - Starting locations
 - Game motor
   - Leaders and orders
   - Combat
@@ -15,6 +12,7 @@ Maybe a game someday.
   - Beheima
   - Buildings
   - Advancements
+- Fine tune world creation
 - PIXI.js hex rendering (replace Display)
 - ESLint + Husky
 - Unit testing

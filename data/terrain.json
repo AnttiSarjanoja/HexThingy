@@ -16,10 +16,10 @@
         "riches": 2,
         "powers": 1
       },
-      "foods": ["wheat", "rice", "game", "cattle", "pigs", "sheep", "wine"],
-      "strategic": ["copper", "megafauna"],
-      "riches": ["silver"],
-      "powers": ["lead", "mercury", "spirits", "god-ivory"]
+      "foods": ["wheat", "cattle", "pigs", "sheep", "wine"],
+      "strategic": ["copper", "tin", "megafauna", "horses"],
+      "riches": ["god-ivory", "ochre", "salt"],
+      "powers": ["mercury", "spirits"]
     }
   },
   "desert": {
@@ -27,15 +27,15 @@
     "color": "#ff9",
     "resources": {
       "rng": {
-        "foods": 1,
-        "riches": 1,
-        "powers": 2,
+        "foods": 2,
+        "riches": 3,
+        "powers": 3,
         "strategic": 1
       },
       "foods": ["oasis"],
-      "strategic": ["copper"],
-      "riches": ["gems", "silver"],
-      "powers": ["crystals", "spirits", "god-ivory"]
+      "strategic": ["haven"],
+      "riches": ["gems", "silver", "spices", "ochre", "oil", "salt"],
+      "powers": ["crystals", "spirits"]
     }
   },
   "forest": {
@@ -49,9 +49,9 @@
         "powers": 1
       },
       "foods": ["pigs", "game", "fruits"],
-      "strategic": ["copper", "megafauna"],
-      "riches": ["silver"],
-      "powers": ["spirits"]
+      "strategic": ["megafauna", "medicines"],
+      "riches": ["dyes", "furs"],
+      "powers": ["spirits", "world-tree", "spring-of-life"]
     }
   },
   "mountains": {
@@ -59,13 +59,13 @@
     "color": "#686",
     "resources": {
       "rng": {
-        "riches": 1,
-        "strategic": 1,
+        "riches": 2,
+        "strategic": 2,
         "powers": 1
       },
-      "riches": ["gems", "silver"],
-      "strategic": ["copper"],
-      "powers": ["lead", "mercury", "crystals", "spirits"]
+      "riches": ["gems", "silver", "gold"],
+      "strategic": ["copper", "tin", "coal", "haven"],
+      "powers": ["lead", "crystals", "volcano"]
     }
   },
   "swamp": {
@@ -74,10 +74,18 @@
     "resources": {
       "rng": {
         "foods": 1,
-        "powers": 2
+        "powers": 3,
+        "strategic": 1,
+        "riches": 1
       },
-      "foods": ["fish", "clam"],
-      "powers": ["spirits", "incense"]
+      "foods": ["fish", "shellfish", "rice"],
+      "strategic": ["venom"],
+      "riches": ["papyrus"],
+      "powers": ["spirits", "incense", "bloodmoss", "geyssir"]
     }
+  },
+  "coastal": {
+    "foods": ["fish", "clams"],
+    "riches": ["pearls", "amber"]
   }
 }

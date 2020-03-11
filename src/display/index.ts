@@ -77,3 +77,20 @@ export const getDisplay = (savedHexes: Hex[], regions: Region[]) => {
   })
   return display
 }
+
+export const drawFov = (display: Display, { color }: Region, hex: Hex) => {
+  const { x, y, terrain } = hex
+
+  const colori = addToColor(color, 2)
+  const textColor = addToColor(colori, 2)
+
+  if (hex.beast) {
+    display.draw(hex.x, hex.y, 'B', '#000', colori)
+  } else if (hex.clan) {
+    display.draw(x, y, 'C', '#fff', colori)
+  } else if (hex.resource) {
+    display.draw(x, y, hex.resource.char, '#dd0', colori)
+  } else {
+    display.draw(x, y, terrain.char, textColor, colori)
+  }
+}

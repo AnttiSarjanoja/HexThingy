@@ -1,9 +1,18 @@
 {
   "debugChar": "¢",
   "rng": {
-    "gold": 0,
-    "silver": 3,
-    "pearls": 1,
-    "gems": 1
+    "gold": 1,
+    "silver": 4,
+    "pearls": 2,
+    "gems": 2,
+    "spices": 2,
+    "dyes": 2,
+    "furs": 2,
+    "god-ivory": 2,
+    "amber": 2,
+    "salt": 3,
+    "ochre": 4,
+    "papyrus": 2,
+    "oil": 2
   }
 }
