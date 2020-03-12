@@ -1,4 +1,4 @@
-import { Hex } from '../model/Hex'
+import { Hex } from '../model/hex'
 
 type Coord = { x: number; y: number }
 

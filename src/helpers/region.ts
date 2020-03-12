@@ -1,6 +1,6 @@
 import { getNeighHexes } from './hex'
 import { Region } from '../model/region'
-import { Hex } from '../model/Hex'
+import { Hex } from '../model/hex'
 
 export const getNeighRegions = (hexes: Hex[], regions: Region[]) => (
   r: Region,

@@ -5,7 +5,7 @@ import powers from '../../data/resource-powers.json'
 import riches from '../../data/resource-riches.json'
 import strategic from '../../data/resource-strategic.json'
 import terrain from '../../data/terrain.json'
-import { Hex } from '../model/Hex'
+import { Hex } from '../model/hex'
 
 const resources = {
   foods,

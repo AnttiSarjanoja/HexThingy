@@ -1,4 +1,4 @@
-import { Hex } from './Hex'
+import { Hex } from './hex'
 
 export type Region = {
   hexes: Hex[]

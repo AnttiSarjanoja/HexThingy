@@ -2,14 +2,17 @@
 
 import { Display, FOV } from 'rot-js'
 import { colorBg, drawFov, renderMks, renderTerrains } from '../display'
-import { Hex } from '../model/Hex'
+import { Hex } from '../model/hex'
+import { GameMap } from '../model/map'
 import { Region } from '../model/region'
 
 let mode = 0
 let fov = false
 let iii = 0
 
-export const init = (display: Display, regions: Region[], hexes: Hex[]) => {
+type RenderableMap = Pick<GameMap, 'regions' | 'hexes'>
+
+export const init = (display: Display, { regions, hexes }: RenderableMap) => {
   document.getElementById('root').appendChild(display.getContainer())
   const divi = document.createElement('div')
   divi.style.whiteSpace = 'pre'
@@ -22,15 +25,15 @@ export const init = (display: Display, regions: Region[], hexes: Hex[]) => {
     console.debug(e.key)
     if (e.key === 'v') {
       mode = (mode + 1) % 2
-      render(display, regions, hexes)
+      render(display, { regions, hexes })
     }
     if (e.key === 'f') {
       fov = !fov
-      render(display, regions, hexes, regions[iii])
+      render(display, { regions, hexes }, regions[iii])
     }
     if (e.key === 'i') {
       iii = (iii + 1) % regions.length
-      render(display, regions, hexes, regions[iii])
+      render(display, { regions, hexes }, regions[iii])
     }
   }
 }
@@ -40,13 +43,12 @@ const allowsLos = ({ terrain: { type } }: Hex) =>
 
 export const render = (
   display: Display,
-  regions: Region[],
-  hexes: Hex[],
+  { regions, hexes }: RenderableMap,
   fovRegion?: Region,
 ) => {
   colorBg(display)
   if (!mode) {
-    renderMks(display, regions)
+    renderMks(display, { regions, hexes })
     if (fov) {
       const fovi = new FOV.PreciseShadowcasting(
         (x: number, y: number) => {
@@ -78,7 +80,7 @@ export const render = (
       })
     }
   } else {
-    renderTerrains(display, regions)
+    renderTerrains(display, { regions, hexes })
   }
 }
 

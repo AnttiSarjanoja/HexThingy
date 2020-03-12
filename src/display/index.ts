@@ -1,8 +1,9 @@
 import { Display } from 'rot-js'
 import terrainData from '../../data/terrain.json'
-import { Hex } from '../model/Hex'
-import { Region } from '../model/region'
 import { addToColor } from '../helpers/color'
+import { Hex } from '../model/hex'
+import { GameMap } from '../model/map'
+import { Region } from '../model/region'
 
 const displayOptions = {
   spacing: 3,
@@ -10,7 +11,9 @@ const displayOptions = {
   transpose: true,
 }
 
-export const renderMks = (display: Display, regions: Region[]) =>
+type RenderableMap = Pick<GameMap, 'hexes' | 'regions'>
+
+export const renderMks = (display: Display, { regions }: RenderableMap) =>
   regions.forEach(({ color, hexes }) =>
     hexes.forEach(hex => {
       const { x, y, terrain } = hex
@@ -27,7 +30,7 @@ export const renderMks = (display: Display, regions: Region[]) =>
     }),
   )
 
-export const renderTerrains = (display: Display, regions: Region[]) =>
+export const renderTerrains = (display: Display, { regions }: RenderableMap) =>
   regions.forEach(({ hexes }) =>
     hexes.forEach(hex => {
       const { x, y, terrain } = hex
@@ -50,9 +53,9 @@ export const colorBg = (display: Display) => {
   }
 }
 
-export const getDisplay = (savedHexes: Hex[], regions: Region[]) => {
-  const maxX = savedHexes.reduce((a, c) => (c.x > a ? c.x : a), 0) + 1
-  const maxY = savedHexes.reduce((a, c) => (c.y > a ? c.y : a), 0) + 1
+export const getDisplay = ({ hexes, regions }: RenderableMap) => {
+  const maxX = hexes.reduce((a, c) => (c.x > a ? c.x : a), 0) + 1
+  const maxY = hexes.reduce((a, c) => (c.y > a ? c.y : a), 0) + 1
 
   const display = new Display({ ...displayOptions, width: maxX, height: maxY })
   display.getContainer().addEventListener('mousemove', evt => {
@@ -61,7 +64,7 @@ export const getDisplay = (savedHexes: Hex[], regions: Region[]) => {
       const regioni = regions.find(r =>
         r.hexes.some(({ x: xx, y: yy }) => xx === x && yy === y),
       )
-      const hex = savedHexes.find(({ x: xx, y: yy }) => xx === x && yy === y)
+      const hex = hexes.find(({ x: xx, y: yy }) => xx === x && yy === y)
       document.getElementById('moi').textContent = regioni
         ? JSON.stringify(
             {
