@@ -1,19 +1,8 @@
 import { Hex } from '../model/hex'
+import { getNeighs } from '../common/helpers'
 
-type Coord = { x: number; y: number }
-
-export const getHex = (hexes: Hex[], { x, y }: { x: number; y: number }) =>
+export const findHex = (hexes: Hex[], { x, y }: { x: number; y: number }) =>
   hexes.find(({ x: xx, y: yy }) => x === xx && y === yy)
-
-export const getNeighs = ({ x, y }: Coord): Coord[] =>
-  [
-    { x: x - 1, y: y - 1 },
-    { x: x + 1, y: y - 1 },
-    { x: x - 2, y: y },
-    { x: x + 2, y: y },
-    { x: x - 1, y: y + 1 },
-    { x: x + 1, y: y + 1 },
-  ] as Coord[]
 
 export const getNeighHexes = ({ hexes }: { hexes: Hex[] }) => (hex: Hex) => {
   const neighs = getNeighs(hex)

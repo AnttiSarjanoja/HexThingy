@@ -2,7 +2,7 @@ import { Display } from 'rot-js'
 import { RenderData } from './types'
 import { colorBg, renderMks, renderTerrains } from './display'
 
-type InputMode = 'map'
+type InputMode = 'map' | 'move'
 
 // TODO: How to actually do this stuff in a smart way?
 export const getUiState = (display: Display, initialData: RenderData) => {
@@ -53,22 +53,32 @@ export const getUiState = (display: Display, initialData: RenderData) => {
     },
     chosenHex: {
       value: undefined as any,
-      listeners: [
-        () => {
-          console.log('click', uiState.chosenHex.value)
-        },
-      ] as Function[],
+      // listeners: [
+      //   () => {
+      //     const _ = {
+      //       map: () => {},
+      //       move: () => {
+      //         console.log('placed move', uiState.chosenHex.value)
+      //       },
+      //     }[uiState.inputMode.value]()
+      //   },
+      // ] as Function[],
+      unset: () => {
+        uiState.chosenHex.value = undefined
+      },
       setWithCoords: ({ x, y }: { x: number; y: number }) => {
-        uiState.chosenHex.value = uiState.data.find(
+        const hex = uiState.data.find(
           ({ x: xx, y: yy }) => x === xx && y === yy,
         )
-        uiState.chosenHex.listeners.forEach(fn => fn())
+        uiState.chosenHex.value = hex
+        // uiState.chosenHex.listeners.forEach(fn => fn())
+        uiState.render()
       },
     },
     render: () => {
       colorBg(display)
       if (!uiState.renderMode.value) {
-        renderMks(display, uiState.data)
+        renderMks(display, uiState.data, uiState.chosenHex.value)
       } else {
         renderTerrains(display, uiState.data)
       }

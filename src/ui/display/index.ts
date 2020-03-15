@@ -12,11 +12,22 @@ const displayOptions = {
 
 const dimNotSeen = (color: string) => multiplyColor(color, 0.3)
 
-export const renderMks = (display: Display, data: RenderData) =>
-  data.forEach(data => {
-    const { x, y, inLos, terrain, regionColor, unit } = data
+export const renderMks = (
+  display: Display,
+  data: RenderData,
+  chosenHex: RenderData[0],
+) =>
+  data.forEach(hex => {
+    const { x, y, inLos, terrain, regionColor, unit, order } = hex
+    const isChosen = hex === chosenHex
     const textColor = inLos ? addToColor(regionColor, 2) : regionColor
-    const usedColor = inLos ? regionColor : dimNotSeen(regionColor)
+    const usedColor = isChosen
+      ? '#f00'
+      : order
+      ? '#0ff'
+      : inLos
+      ? regionColor
+      : dimNotSeen(regionColor)
     if (unit) {
       display.draw(x, y, unit.char, unit.textColor, usedColor)
     } else if (terrain.resource) {

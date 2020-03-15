@@ -20,6 +20,9 @@ export type RenderData = Array<{
     char: string
     textColor: string
   }
+  order?: {
+    type: string
+  }
 }>
 
 // TODO: More complex data for pixi-js

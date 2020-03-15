@@ -1,6 +1,6 @@
 import { FOV } from 'rot-js'
 import { Tribe, GameMap } from '../model/map'
-import { allowsLos, getHex } from '../helpers/hex'
+import { allowsLos, findHex } from '../helpers/hex'
 import { getClanHex } from '../helpers/clan'
 import { LOSDIST } from '../constants'
 import { Region } from '../model/region'
@@ -61,7 +61,7 @@ export const getRenderData = (
 
   fovHexes.forEach(({ x, y }) => {
     fovi.compute(x, y, LOSDIST, (xx: any, yy: any, r: any, vis: any) => {
-      const hex = getHex(hexes, { x: xx, y: yy })
+      const hex = findHex(hexes, { x: xx, y: yy })
       if (hex) {
         retVal.find(val => val.x === xx && val.y === yy).inLos = true
       }

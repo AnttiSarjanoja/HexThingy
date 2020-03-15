@@ -10,7 +10,7 @@ import { RenderData } from './types'
 // TODO: Separate dom changes
 export const init = (
   data: RenderData,
-  togglers: Record<string, VoidFunction>, // TODO: doesn't feel right
+  togglers: Record<string, Function>, // TODO: doesn't feel right
 ) => {
   const display = newDisplay(data)
   const uiState = getUiState(display, data)
@@ -23,7 +23,7 @@ export const init = (
 
   handleKeyDown(uiState, togglers)
   handleDisplayMouseMove(uiState)
-  handleDisplayMouseClick(uiState)
+  handleDisplayMouseClick(uiState, togglers)
   // display.getContainer().onmousemove = handleDisplayMouseMove(uiState)
 
   return {

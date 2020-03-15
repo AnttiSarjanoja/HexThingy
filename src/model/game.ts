@@ -7,6 +7,7 @@ export type Order = {
   owner: Tribe
   issuer: string // TODO Leader
   target: Hex | Region
+  payload: any
 }
 
 export type Turn = {

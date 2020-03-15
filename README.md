@@ -2,13 +2,20 @@
 
 Maybe a game someday.
 
+## TL;DR
+
+- `npm install`
+- `npm start`
+- open browser to http://localhost:3000
+
 ## TODO
 
+- Data away from bundle
 - Tribe model
   - Seen hexes (turn, contents)
   - Advancements
 - Game motor
-  - Leaders and orders
+  - Leaders to orders
   - Combat
   - Gods
   - Beheima
@@ -22,3 +29,9 @@ Maybe a game someday.
 - Unit testing
 - Commitlint
 - React for better UI
+
+## Notes
+
+- Backend must validate all orders through Validator
+- UI must prohibit user from doing invalid rules
+  - double check generated orders with Validator to prevent unsynchronized order generation and validation
