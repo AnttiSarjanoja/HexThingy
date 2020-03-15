@@ -1,11 +1,14 @@
-import { getNeighHexes } from './hex'
-import { Region } from '../model/region'
 import { Hex } from '../model/hex'
+import { Region } from '../model/region'
+import { getNeighHexes } from './hex'
 
-export const getNeighRegions = (hexes: Hex[], regions: Region[]) => (
-  r: Region,
-) => {
-  const neighHexes = getNeighHexes(hexes)
+type Props = {
+  regions: Region[]
+  hexes: Hex[]
+}
+
+export const getNeighRegions = ({ regions, hexes }: Props) => (r: Region) => {
+  const neighHexes = getNeighHexes({ hexes })
 
   return r.hexes
     .reduce(
@@ -19,3 +22,9 @@ export const getNeighRegions = (hexes: Hex[], regions: Region[]) => (
     )
     .filter((r, i, a) => a.indexOf(r) === i)
 }
+
+export const instancifyIds = (regions: Region[], ids: string[]) =>
+  ids.map(s => regions.find(r => r.name === s))
+
+export const getRegionsHexes = ({ regions }: { regions: Region[] }) =>
+  regions.reduce((a, c) => a.concat(c.hexes), [] as Hex[])

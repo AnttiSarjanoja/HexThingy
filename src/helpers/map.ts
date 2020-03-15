@@ -1,3 +1,4 @@
+import { generateMap } from '../generator/map'
 import { GameMap } from '../model/map'
 import { getNeighRegions } from './region'
 
@@ -7,7 +8,7 @@ export const getStartingLocations = ({ regions, hexes, tribes }: GameMap) => {
   )
 
   // TODO: Come up with a better word than *neigh*
-  const neighRegions = getNeighRegions(hexes, regions)
+  const neighRegions = getNeighRegions({ hexes, regions })
 
   const bestStartingLocations = startingLocationCandidates
     .slice()
@@ -23,4 +24,27 @@ export const getStartingLocations = ({ regions, hexes, tribes }: GameMap) => {
     .slice(0, tribes.length)
 
   return bestStartingLocations
+}
+
+export const getMap = (playerAmt: number): GameMap => {
+  const map = generateMap(playerAmt)
+  const { name, hexes, regions } = map
+
+  console.info(
+    `Generated ${name}: ${hexes.length} hexes and ${regions.length} regions`,
+  )
+
+  const startingLocations = getStartingLocations(map)
+  if (startingLocations.length < playerAmt) {
+    return getMap(playerAmt)
+  }
+
+  map.tribes = startingLocations.map((r, i) => ({
+    name: `Tribe ${i}`,
+    clans: r.hexes.filter(h => h.clan).map(h => h.clan),
+  }))
+
+  console.log(`Starting locations`, ...map.tribes)
+
+  return map
 }

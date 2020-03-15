@@ -3,7 +3,7 @@
 import { RNG } from 'rot-js'
 import regionPrefix from '../../data/region-prefix.json'
 import terrain from '../../data/terrain.json'
-import { getNeighs } from '../helpers/hex'
+import { getNeighs, getNeighHexes, isHabitable } from '../helpers/hex'
 import { REGION_HEXES, REGION_MIN } from '../constants'
 import { Hex } from '../model/Hex.js'
 import { Region } from '../model/region'
@@ -102,21 +102,16 @@ export const initRegions = (amt: number): Region[] => {
       y,
       terrain: { type: 'plains', char: '_' },
     })),
-    color: `#${[rand(6) + 3, rand(6) + 3, rand(6) + 3].join('')}`, // [rand(6) + 3, rand(6) + 3, rand(6) + 3],
+    color: `#${[rand(6) + 3, rand(6) + 3, rand(6) + 3].join('')}`,
     name: '',
   }))
 
   const savedHexes = regions.reduce((a, c) => [...a, ...c.hexes], [] as Hex[])
 
-  const getNeighHexes = (hex: Hex) => {
-    const neighs = getNeighs(hex)
-    return savedHexes.filter(({ x, y }) =>
-      neighs.some(({ x: xx, y: yy }) => x === xx && y === yy),
-    )
-  }
-
   const getAccessNeighHexes = (hex: Hex) =>
-    getNeighHexes(hex).filter(h => h.terrain.type === 'plains')
+    getNeighHexes({ hexes: savedHexes })(hex).filter(
+      h => h.terrain.type === 'plains',
+    )
 
   let notEnoughTerrainModified = true
 
@@ -173,43 +168,37 @@ export const populateRegion = (region: Region) => {
     insertResource(h)
   })
 
-  // TODO: Move clan insertion on map level - put clans mostly on regions with food
   // Insert clans on region
-  const isHabitable = (h: Hex) =>
-    h.resource?.type === 'foods' ||
-    h.terrain.type === 'forest' ||
-    h.terrain.type === 'plains'
-
   const clanRoll = () =>
     hexes.filter(isHabitable).length / (hexes.length * 1.25) > RNG.getUniform()
   const hasClan = clanRoll()
   const isFood = chosen.some(r => r.resource?.type === 'foods') && clanRoll()
   const maxClans = +hasClan + +isFood
 
-  const getInsertedClans = () => hexes.filter(h => h.clan).length
+  const getInsertedAmt = () => hexes.filter(h => h.clan).length
 
   // 1) insert clans on food hexes
   chosen
     .filter(h => h.resource?.type === 'foods')
     .forEach(h => {
-      if (getInsertedClans() < maxClans) {
+      if (getInsertedAmt() < maxClans) {
         insertClan(h)
       }
     })
 
   // 2) insert rest of the clans into habitable resource hexes
-  if (getInsertedClans() < maxClans) {
+  if (getInsertedAmt() < maxClans) {
     hexes
       .filter(h => !h.beast && !h.clan && isHabitable(h) && h.resource)
-      .slice(0, maxClans - getInsertedClans())
+      .slice(0, maxClans - getInsertedAmt())
       .forEach(h => insertClan(h))
   }
 
   // 3) insert rest of the clans into habitable hexes if possible
-  if (getInsertedClans() < maxClans) {
+  if (getInsertedAmt() < maxClans) {
     hexes
       .filter(h => !h.beast && !h.clan && isHabitable(h))
-      .slice(0, maxClans - getInsertedClans())
+      .slice(0, maxClans - getInsertedAmt())
       .forEach(h => insertClan(h))
   }
 

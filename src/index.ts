@@ -1,30 +1,19 @@
-import { getDisplay } from './display'
-import { generateMap } from './generator/map'
-import { getStartingLocations } from './helpers/map'
-import { init, render } from './ui'
+import { initGameForPlayer, newGame } from './engine'
+import { init } from './ui'
 
-const playerAmt = 3
+const playerAmt = 4
 
-// TODO: This shouldn't be here, refactor generator + helper
-const getMap = (): any => {
-  const map = generateMap(playerAmt)
-  const { name, hexes, regions } = map
+const game = newGame(Array(playerAmt).fill('Bob'))
 
-  console.info(
-    `Generated ${name}: ${hexes.length} hexes and ${regions.length} regions`,
-  )
+let chosenTribe = 0
 
-  const startingLocations = getStartingLocations(map)
-  if (startingLocations.length < playerAmt) {
-    return getMap()
-  }
-  return { map, startingLocations }
+const togglers = {} as Record<string, VoidFunction>
+
+const renderData = initGameForPlayer(game.players[chosenTribe].tribe, game)
+const { refreshData } = init(renderData, togglers)
+
+togglers.toggleChosenTribe = () => {
+  chosenTribe = (chosenTribe + 1) % game.map.tribes.length
+  const renderData = initGameForPlayer(game.players[chosenTribe].tribe, game)
+  refreshData(renderData)
 }
-
-const { map, startingLocations } = getMap()
-
-const DISPLAY = getDisplay(map)
-init(DISPLAY, map) // TODO: Just somehow else
-render(DISPLAY, map)
-
-console.info(`Starting locations`, ...startingLocations)
