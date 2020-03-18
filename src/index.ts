@@ -3,6 +3,7 @@ import { init } from './ui'
 import { findHex } from './helpers/hex'
 import { Order } from './model/game'
 import { Hex } from './model/hex'
+import { UIOrder, GameActions } from './ui/types'
 
 const playerAmt = 4
 
@@ -10,16 +11,16 @@ const game = newGame(Array(playerAmt).fill('Bob'))
 
 let chosenTribe = 0
 
-// TODO: gahh, rename
-const togglers = {} as Record<string, Function>
+const actions = { debug: {} } as GameActions
 
 let renderData = initGameForPlayer(game.players[chosenTribe].tribe, game)
-const { refreshData } = init(renderData, togglers)
+const { refreshData } = init(renderData, actions)
 
+// NOTE: This variable is stored only in client instances and initialised when loaded
 const addedOrders = {} as Record<string, Order>
 const getOrderKey = ({ type, x, y }: UIOrder) => [type, x, y].join('-')
 
-togglers.toggleChosenTribe = () => {
+actions.debug.toggleChosenTribe = () => {
   chosenTribe = (chosenTribe + 1) % game.map.tribes.length
   renderData = initGameForPlayer(game.players[chosenTribe].tribe, game)
   Object.values(addedOrders).forEach(({ target, type }) => {
@@ -31,13 +32,7 @@ togglers.toggleChosenTribe = () => {
   refreshData(renderData)
 }
 
-type UIOrder = {
-  type: string
-  x: number
-  y: number
-}
-
-togglers.endTurn = () => {
+actions.endTurn = () => {
   addOrders(game, Object.values(addedOrders))
   Object.keys(addedOrders).forEach(s => delete addedOrders[s]) // Meh
   endTurn(game)
@@ -46,7 +41,7 @@ togglers.endTurn = () => {
   refreshData(renderData)
 }
 
-togglers.addOrder = (uiOrder: UIOrder, payload: any) => {
+actions.addOrder = (uiOrder: UIOrder, payload: any) => {
   const { x, y, type } = uiOrder
   const hex = findHex(game.map.hexes, { x, y })
   const key = getOrderKey(uiOrder)

@@ -5,13 +5,10 @@ import {
   handleKeyDown,
 } from './input'
 import { getUiState } from './state'
-import { RenderData } from './types'
+import { GameActions, RenderData } from './types'
 
 // TODO: Separate dom changes
-export const init = (
-  data: RenderData,
-  togglers: Record<string, Function>, // TODO: doesn't feel right
-) => {
+export const init = (data: RenderData, actions: GameActions) => {
   const display = newDisplay(data)
   const uiState = getUiState(display, data)
 
@@ -21,10 +18,9 @@ export const init = (
   divi.id = 'debug-texts'
   document.getElementById('root').appendChild(divi)
 
-  handleKeyDown(uiState, togglers)
+  handleKeyDown(uiState, actions)
   handleDisplayMouseMove(uiState)
-  handleDisplayMouseClick(uiState, togglers)
-  // display.getContainer().onmousemove = handleDisplayMouseMove(uiState)
+  handleDisplayMouseClick(uiState, actions)
 
   return {
     refreshData: (data: RenderData) => {

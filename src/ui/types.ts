@@ -1,3 +1,19 @@
+export type UIOrder = {
+  type: string
+  x: number
+  y: number
+}
+
+export type GameActions = {
+  endTurn: VoidFunction
+  addOrder: (uiOrder: UIOrder, payload: any) => void
+
+  // Only used with debug mode
+  debug: {
+    toggleChosenTribe: VoidFunction
+  }
+}
+
 export type RenderData = Array<{
   x: number
   y: number

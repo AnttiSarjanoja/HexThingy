@@ -1,26 +1,21 @@
-import { UIState } from './state'
 import { areNeighs } from '../common/helpers'
+import { UIState } from './state'
+import { GameActions } from './types'
 
-export function handleKeyDown(
-  uiState: UIState,
-  togglers: Record<string, Function>,
-) {
-  document.addEventListener('keydown', ({ key }) => {
-    console.debug(key)
-    if (key === 'v') {
-      uiState.renderMode.toggle()
-    } else if (key === 't') {
-      togglers.toggleChosenTribe()
-    } else if (key === 'e') {
-      togglers.endTurn()
-    } else if (key === 'm') {
+export function handleKeyDown(uiState: UIState, actions: GameActions) {
+  const handlers = {
+    v: () => uiState.renderMode.toggle(),
+    t: () => actions.debug.toggleChosenTribe(),
+    e: () => actions.endTurn(),
+    m: () => {
       if (uiState.chosenHex.value?.unit?.type === 'clan') {
         uiState.inputMode.setter('move')
       }
-    } else if (key === 'Escape') {
-      uiState.inputMode.setter('map')
-    }
-  })
+    },
+    Escape: () => uiState.inputMode.setter('map'),
+  } as Record<string, VoidFunction>
+
+  document.addEventListener('keydown', ({ key }) => handlers[key]())
 }
 
 export function handleDisplayMouseMove(uiState: UIState) {
@@ -32,42 +27,42 @@ export function handleDisplayMouseMove(uiState: UIState) {
 
 export function handleDisplayMouseClick(
   uiState: UIState,
-  togglers: Record<string, Function>,
+  actions: GameActions,
 ) {
+  const handlers = {
+    map: (x: number, y: number) => {
+      uiState.chosenHex.setWithCoords({ x, y })
+    },
+    move: (x: number, y: number) => {
+      console.log(uiState.chosenHex.value)
+      const { x: fromX, y: fromY } = uiState.chosenHex.value
+      const target = uiState.data.find(
+        ({ x: xx, y: yy }) => x === xx && y === yy,
+      )
+      if (
+        uiState.chosenHex.value?.unit?.type === 'clan' &&
+        areNeighs({ x, y }, { x: fromX, y: fromY }) &&
+        !target.unit
+      ) {
+        uiState.chosenHex.unset()
+        actions.addOrder(
+          { type: 'clan-move', x, y },
+          {
+            from: { x: fromX, y: fromY },
+          },
+        )
+        uiState.inputMode.setter('map')
+      }
+    },
+  }
+
   uiState.display.value.getContainer().addEventListener('mousedown', evt => {
     const [x, y] = uiState.display.value.eventToPosition(evt)
-    // TODO: just no
-    const _ = {
-      map: () => {
-        uiState.chosenHex.setWithCoords({ x, y })
-      },
-      move: () => {
-        console.log(uiState.chosenHex.value)
-        const { x: fromX, y: fromY } = uiState.chosenHex.value
-        const target = uiState.data.find(
-          ({ x: xx, y: yy }) => x === xx && y === yy,
-        )
-        if (
-          uiState.chosenHex.value?.unit?.type === 'clan' &&
-          areNeighs({ x, y }, { x: fromX, y: fromY }) &&
-          !target.unit
-        ) {
-          uiState.chosenHex.unset()
-          togglers.addOrder(
-            { type: 'clan-move', x, y },
-            {
-              from: { x: fromX, y: fromY },
-            },
-          )
-          uiState.inputMode.setter('map')
-        }
-      },
-    }[uiState.inputMode.value]()
+    handlers[uiState.inputMode.value](x, y)
   })
 }
 
 // TODO: Input modes
-// e: End turn
 
 // NOTE: Keyboard navigations
 // function checkKey(e: KeyboardEvent) {
