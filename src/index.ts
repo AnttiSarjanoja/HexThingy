@@ -1,9 +1,12 @@
-import { initGameForPlayer, newGame, addOrders, endTurn } from './engine'
-import { init } from './ui'
+import { addOrders, endTurn, initGameForPlayer, newGame } from './engine'
 import { findHex } from './helpers/hex'
-import { Order } from './model/game'
 import { Hex } from './model/hex'
-import { UIOrder, GameActions } from './ui/types'
+import { Order, OrderType } from './model/order'
+import { init } from './ui'
+import { GameActions, UIOrder } from './ui/types'
+import { getRandomColor } from './helpers/color'
+
+console.log(getRandomColor())
 
 const playerAmt = 4
 
@@ -49,7 +52,7 @@ actions.addOrder = (uiOrder: UIOrder, payload: any) => {
     return
   }
   addedOrders[key] = {
-    type,
+    type: type as OrderType,
     owner: game.players[chosenTribe].tribe,
     issuer: 'Bob',
     target: hex,

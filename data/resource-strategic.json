@@ -3,10 +3,11 @@
   "rng": {
     "copper": 5,
     "coal": 4,
+    "stone": 2,
+    "haven": 2,
     "tin": 1,
     "horses": 1,
     "megafauna": 1,
-    "haven": 2,
     "venom": 1,
     "medicines": 1
   }

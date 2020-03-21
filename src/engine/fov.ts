@@ -10,7 +10,7 @@ import terrainData from '../../data/terrain.json'
 
 // prettier-ignore
 const getUnit = ({ beast, clan }: Pick<Hex, 'beast' | 'clan'>) =>
-  beast ? { type: 'beast', char: 'B', textColor: '#000', name: beast } :
+  beast ? { type: 'beast', char: 'B', textColor: '#000', name: beast.name } :
   clan  ? { type: 'clan', char: 'C', textColor: '#fff', name: clan.name } :
   undefined
 

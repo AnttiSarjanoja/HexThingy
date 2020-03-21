@@ -1,0 +1,32 @@
+{
+  "default": {
+    "epithets": ["Black-striped", "Chromatic", "White-coated", "Three-eyed"]
+  },
+  "Ziz-ann": {
+    "epithets": [
+      "Red-winged",
+      "High-Soaring",
+      "Lightning",
+      "Death-claws",
+      "Deafening-scream"
+    ]
+  },
+  "Behem-ann": {
+    "epithets": ["Blood-Tusk", "Six-legs", "Strong", "Club-tail", "Long-horned"]
+  },
+  "Neth-ann": {
+    "epithets": [
+      "Death-stare",
+      "King-lion",
+      "Thousand-teeth",
+      "Venom-fang",
+      "Trap-maker"
+    ]
+  },
+  "Nun-ann": {
+    "epithets": ["Mirage", "Mirror-Scaled", "Blind", "Slimy", "Poison-breath"]
+  },
+  "Baas-set": {
+    "epithets": ["In-the-fog", "Faceless", "Shadow", "Dust-skull"]
+  }
+}

@@ -3,19 +3,15 @@
 import { RNG } from 'rot-js'
 import regionPrefix from '../../data/region-prefix.json'
 import terrain from '../../data/terrain.json'
-import { getNeighs } from '../common/helpers'
+import { getNeighs, not } from '../common/helpers'
+import { Coord } from '../common/types'
 import { REGION_HEXES, REGION_MIN } from '../constants'
+import { getRandomColor } from '../helpers/color'
 import { getNeighHexes, isHabitable } from '../helpers/hex'
 import { Hex } from '../model/Hex.js'
 import { Region } from '../model/region'
 import { getBeast } from './beast'
 import { insertClan, insertResource } from './hex'
-
-type Coord = { x: number; y: number }
-
-const rand = (max: number) => (RNG.getUniform() * max) | 0
-
-const not = (fn: any) => (...params: any) => !fn(...params)
 
 export const initRegions = (amt: number): Region[] => {
   const taken = [{ x: 0, y: 0 }]
@@ -40,8 +36,8 @@ export const initRegions = (amt: number): Region[] => {
   }
 
   const reserveRegion = (hexi: Coord): Coord[] => {
-    const [randi, min] = REGION_HEXES
-    const amount = rand(randi) + min
+    const [randomMax, min] = REGION_HEXES
+    const amount = RNG.getUniformInt(0, randomMax) + min
     const retVal = [hexi]
     const takenNeighs =
       taken.length > 1
@@ -103,7 +99,7 @@ export const initRegions = (amt: number): Region[] => {
       y,
       terrain: { type: 'plains', char: '_' },
     })),
-    color: `#${[rand(6) + 3, rand(6) + 3, rand(6) + 3].join('')}`,
+    color: getRandomColor(4, 9),
     name: '',
   }))
 
@@ -121,7 +117,7 @@ export const initRegions = (amt: number): Region[] => {
     const neighs = RNG.shuffle(getAccessNeighHexes(randHex))
     const usedNeighs = neighs.slice(0, neighs.length - 1)
     const trn = RNG.getWeightedValue(terrain.rng)
-    const chosen = usedNeighs.slice(0, rand(3) + 1).concat(randHex)
+    const chosen = usedNeighs.slice(0, RNG.getUniformInt(1, 3)).concat(randHex)
 
     chosen.forEach(h => {
       h.terrain = { type: trn, char: (terrain as any)[trn].char }
@@ -162,7 +158,10 @@ export const populateRegion = (region: Region) => {
   // Generate resources on random hexes
   const resourceMax = hexes.length - Math.max((hexes.length / 2) | 0, 1)
   const resourceMin = (hexes.length / 4) | 0
-  const amt = Math.min(rand(resourceMax + 1 - resourceMin) + resourceMin, 4)
+  const amt = Math.min(
+    RNG.getUniformInt(0, resourceMax - resourceMin) + resourceMin,
+    4,
+  )
   const chosen = RNG.shuffle(hexes.filter(v => v !== beastHex)).slice(0, amt)
 
   chosen.forEach(h => {

@@ -17,7 +17,7 @@
         "powers": 1
       },
       "foods": ["wheat", "cattle", "pigs", "sheep", "wine"],
-      "strategic": ["copper", "tin", "megafauna", "horses"],
+      "strategic": ["copper", "tin", "megafauna", "horses", "stone"],
       "riches": ["god-ivory", "ochre", "salt"],
       "powers": ["mercury", "spirits"]
     }
@@ -64,7 +64,7 @@
         "powers": 1
       },
       "riches": ["gems", "silver", "gold"],
-      "strategic": ["copper", "tin", "coal", "haven"],
+      "strategic": ["copper", "tin", "coal", "haven", "stone"],
       "powers": ["lead", "crystals", "volcano"]
     }
   },

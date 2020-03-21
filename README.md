@@ -10,7 +10,7 @@ Maybe a game someday.
 
 ## TODO
 
-- Data away from bundle
+- Data (jsons) away from bundle
 - Tribe model
   - Seen hexes (turn, contents)
   - Advancements

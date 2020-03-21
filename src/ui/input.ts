@@ -15,7 +15,7 @@ export function handleKeyDown(uiState: UIState, actions: GameActions) {
     Escape: () => uiState.inputMode.setter('map'),
   } as Record<string, VoidFunction>
 
-  document.addEventListener('keydown', ({ key }) => handlers[key]())
+  document.addEventListener('keydown', ({ key }) => handlers[key]?.())
 }
 
 export function handleDisplayMouseMove(uiState: UIState) {
@@ -46,7 +46,7 @@ export function handleDisplayMouseClick(
       ) {
         uiState.chosenHex.unset()
         actions.addOrder(
-          { type: 'clan-move', x, y },
+          { type: 'move', x, y },
           {
             from: { x: fromX, y: fromY },
           },

@@ -1,9 +1,11 @@
-import { getMap } from '../helpers/map'
-import { Game, Order } from '../model/game'
-import { getRenderData } from './fov'
-import { Tribe } from '../model/map'
 import { findHex } from '../helpers/hex'
+import { getMap } from '../helpers/map'
+import { Game } from '../model/game'
 import { Hex } from '../model/hex'
+import { Tribe } from '../model/map'
+import { Order } from '../model/order'
+import { getRenderData } from './fov'
+import { messages } from './messages'
 
 // TODO: Insert other data?
 export const newGame = (users: string[]): Game => {
@@ -11,7 +13,11 @@ export const newGame = (users: string[]): Game => {
 
   return {
     map,
-    players: users.map((u, i) => ({ name: u, tribe: map.tribes[i] })),
+    players: users.map((u, i) => ({
+      name: u,
+      tribe: map.tribes[i],
+      messages: [],
+    })),
     turns: [{ orders: [] }],
   }
 }
@@ -24,9 +30,10 @@ export const addOrders = (game: Game, addedOrders: Order[]) => {
 }
 
 // TODO: Validate turns
-export const endTurn = ({ map, turns }: Game) => {
-  console.log('processing orders', turns[turns.length - 1])
-  turns[turns.length - 1].orders.forEach(o => {
+export const endTurn = ({ map, turns, players }: Game) => {
+  const currentTurn = turns[turns.length - 1]
+  console.debug('processing orders', currentTurn)
+  currentTurn.orders.forEach(o => {
     // TODO: Handling different types
     const from = o.payload.from
     const fromHex = findHex(map.hexes, { x: from.x, y: from.y })
@@ -36,7 +43,11 @@ export const endTurn = ({ map, turns }: Game) => {
     const to = o.target as Hex
     const toHex = findHex(map.hexes, { x: to.x, y: to.y })
     toHex.clan = clan
-    console.log(from, to)
+
+    const owner = players.find(p => p.tribe === o.owner)
+    owner.messages.push(
+      messages.debug.orders[o.type](owner, clan, fromHex, toHex),
+    )
   })
   turns.push({ orders: [] })
 }
