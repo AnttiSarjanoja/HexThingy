@@ -5,8 +5,7 @@ import { Order, OrderType } from './model/order'
 import { init } from './ui'
 import { GameActions, UIOrder } from './ui/types'
 import { getRandomColor } from './helpers/color'
-
-console.log(getRandomColor())
+import { RNG } from 'rot-js'
 
 const playerAmt = 4
 

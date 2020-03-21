@@ -30,12 +30,13 @@ export type RenderData = Array<{
       char: string
     }
   }
-  unit?: {
+  units: Array<{
     type: string
     name: string
     char: string
     textColor: string
-  }
+    owner?: string
+  }>
   order?: {
     type: string
   }

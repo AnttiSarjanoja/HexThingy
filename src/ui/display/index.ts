@@ -18,7 +18,7 @@ export const renderMks = (
   chosenHex: RenderData[0],
 ) =>
   data.forEach(hex => {
-    const { x, y, inLos, terrain, regionColor, unit, order } = hex
+    const { x, y, inLos, terrain, regionColor, units, order } = hex
     const isChosen = hex === chosenHex
     const textColor = inLos ? addToColor(regionColor, 2) : regionColor
     const usedColor = isChosen
@@ -28,8 +28,8 @@ export const renderMks = (
       : inLos
       ? regionColor
       : dimNotSeen(regionColor)
-    if (unit) {
-      display.draw(x, y, unit.char, unit.textColor, usedColor)
+    if (units.length) {
+      display.draw(x, y, units[0].char, units[0].textColor, usedColor)
     } else if (terrain.resource) {
       display.draw(x, y, terrain.resource.char, '#dd0', usedColor)
     } else {

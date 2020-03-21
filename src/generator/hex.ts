@@ -6,6 +6,7 @@ import riches from '../../data/resource-riches.json'
 import strategic from '../../data/resource-strategic.json'
 import terrain from '../../data/terrain.json'
 import { Hex } from '../model/hex'
+import { Warrior } from '../model/warrior'
 
 const resources = {
   foods,
@@ -32,4 +33,10 @@ export const insertResource = (hex: Hex) => {
 
 export const insertClan = (hex: Hex) => {
   hex.clan = { name: RNG.getItem(clans) }
+  const warrior: Warrior = {
+    name: `Warriors of the ${hex.clan.name} clan`,
+    buffs: [],
+  }
+  hex.warriors = [warrior]
+  hex.clan.warrior = warrior
 }

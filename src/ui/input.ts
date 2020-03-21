@@ -42,7 +42,7 @@ export function handleDisplayMouseClick(
       if (
         uiState.chosenHex.value?.unit?.type === 'clan' &&
         areNeighs({ x, y }, { x: fromX, y: fromY }) &&
-        !target.unit
+        !target.units.length
       ) {
         uiState.chosenHex.unset()
         actions.addOrder(

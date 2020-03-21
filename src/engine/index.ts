@@ -6,10 +6,12 @@ import { Tribe } from '../model/map'
 import { Order } from '../model/order'
 import { getRenderData } from './fov'
 import { messages } from './messages'
+import { RNG } from 'rot-js'
 
-// TODO: Insert other data?
+// TODO: Insert other data? Map config?
 export const newGame = (users: string[]): Game => {
   const map = getMap(users.length) // TODO: should maybe return map AND players
+  const rngState = RNG.getState()
 
   return {
     map,
@@ -18,7 +20,7 @@ export const newGame = (users: string[]): Game => {
       tribe: map.tribes[i],
       messages: [],
     })),
-    turns: [{ orders: [] }],
+    turns: [{ orders: [], rngState }],
   }
 }
 
@@ -49,5 +51,6 @@ export const endTurn = ({ map, turns, players }: Game) => {
       messages.debug.orders[o.type](owner, clan, fromHex, toHex),
     )
   })
-  turns.push({ orders: [] })
+  const rngState = RNG.getState()
+  turns.push({ orders: [], rngState })
 }

@@ -12,13 +12,16 @@ General move order for moving clans and warriors on the map.
 
 ### Precondition:
 
+Move range equals lowest amount of movement in the army lead by the leader if any. Furthest move range is the tribal supply range.
+
 - IF leader on map THEN leader must be in move range of hex
 - IF leader not on map THEN some friendly clan must be in move range
+- All moving clans and warriors must be loyal
 
 ### Effects:
 
-1. All warriors (if any) currently led by the leader will move to target
-2. Any other warriors or a single clan may move if in range from friendly territory
+1. All chosen warriors (if any) currently led by the leader will move to target
+2. Any other warriors and / or a single clan may move if in THEIR range from friendly territory
 3. All moved warriors will form an army led by the issuing leader
 
 ## Settle
@@ -92,6 +95,28 @@ Collecting exploited strategic and riches -resources
 ### Effects:
 
 1. (Effect)
+
+## Exploration
+
+Leader explores current region for new resources, hidden treasures etc. Used for choosing undiscovered beast-resource.
+
+### Payload:
+
+- Target - Region
+- Type? - Beast Boon
+
+### Precondition:
+
+- Region must be friendly
+- (Region does not have to under maximum of resources -> Finds hidden treasures)
+- IF Type is given, region must contain a beast-free hex with undiscovered resource
+- Region must not be fully searched (hexes - resources >= search-times)
+
+### Effects:
+
+1. IF Beast Boon - Hex gets chosen resource / Tribe gets chosen treasure
+2. ELSE Roll is made against leader skill, harder on more searched region
+3. IF Roll is successful, Hex gets random resource OR Tribe gets random treasure
 
 ---
 

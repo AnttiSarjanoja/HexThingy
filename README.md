@@ -24,6 +24,7 @@ Maybe a game someday.
   - Replace cyclical deps to ids
   - Either store one big tree with partial serialization or make it fully serialized with a master list
 - Fine tune world creation
+  - Creation context for avoiding duplicate Beast / Clan / Region names
 - PIXI.js hex rendering (replace Display)
 - ESLint + Husky
 - Unit testing

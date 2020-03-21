@@ -1,5 +1,7 @@
+import { Warrior } from './warrior'
+
 export type Clan = {
   name: string
-  warrior?: string // TODO: Warrior
+  warrior?: Warrior
   // owner?: Tribe
 }

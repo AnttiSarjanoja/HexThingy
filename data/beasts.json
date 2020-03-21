@@ -1,32 +1,84 @@
 {
   "default": {
-    "epithets": ["Black-striped", "Chromatic", "White-coated", "Three-eyed"]
+    "epithets": [
+      "Black-striped",
+      "Chromatic",
+      "Pale-one",
+      "Three-eyed",
+      "Five-headed",
+      "Endless",
+      "Eyeless",
+      "Moon-gazer",
+      "Bone-collector",
+      "Forked-tails",
+      "Rotten-death",
+      "Old-as-time"
+    ]
   },
   "Ziz-ann": {
     "epithets": [
-      "Red-winged",
+      "Red-beak",
       "High-Soaring",
       "Lightning",
       "Death-claws",
-      "Deafening-scream"
+      "Deafening-scream",
+      "Doom-bat",
+      "Four-wings",
+      "Sky-runner",
+      "Sun-glider"
     ]
   },
   "Behem-ann": {
-    "epithets": ["Blood-Tusk", "Six-legs", "Strong", "Club-tail", "Long-horned"]
+    "epithets": [
+      "Blood-Tusk",
+      "Six-legs",
+      "Club-tail",
+      "Five-horned",
+      "Quake-hoofs",
+      "Mother-of-thousands",
+      "Mountain-tall",
+      "Stoneskin",
+      "Gold-antlers",
+      "Living-tree"
+    ]
   },
   "Neth-ann": {
     "epithets": [
-      "Death-stare",
+      "Darkness-that-stares",
       "King-lion",
       "Thousand-teeth",
       "Venom-fang",
-      "Trap-maker"
+      "Spinner-of-death",
+      "Bottomless-maw",
+      "First-wolf",
+      "Silver-bear"
     ]
   },
   "Nun-ann": {
-    "epithets": ["Mirage", "Mirror-Scaled", "Blind", "Slimy", "Poison-breath"]
+    "epithets": [
+      "Mirage",
+      "Hidden-in-fog",
+      "Mirror-Scaled",
+      "Poison-breath",
+      "Ink-spitter",
+      "Coral-skin",
+      "Hundred-tentacles",
+      "Earth-serpent",
+      "Dream-singer",
+      "River-drowner"
+    ]
   },
   "Baas-set": {
-    "epithets": ["In-the-fog", "Faceless", "Shadow", "Dust-skull"]
+    "epithets": [
+      "Chimaira",
+      "Glowing",
+      "Formless",
+      "Faceless",
+      "Shadow",
+      "Dust-skull",
+      "Whisperer-in-abyss",
+      "Star-skin",
+      "Unliving"
+    ]
   }
 }

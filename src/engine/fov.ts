@@ -9,15 +9,16 @@ import { RenderData } from '../ui/types'
 import terrainData from '../../data/terrain.json'
 
 // prettier-ignore
-const getUnit = ({ beast, clan }: Pick<Hex, 'beast' | 'clan'>) =>
-  beast ? { type: 'beast', char: 'B', textColor: '#000', name: beast.name } :
-  clan  ? { type: 'clan', char: 'C', textColor: '#fff', name: clan.name } :
-  undefined
+const getUnits = ({ beast, clan, warriors }: Pick<Hex, 'beast' | 'clan' | 'warriors'>) => [
+  beast ? { type: 'beast', char: 'B', textColor: '#000', name: beast.name } : undefined,
+  clan  ? { type: 'clan', char: 'C', textColor: '#fff', name: clan.name } : undefined,
+  ...(warriors?.map(w => ({ type: 'warrior', char: 'W', textColor: '#fff', name: w.name })) || []),
+].filter(Boolean)
 
 // TODO: Where to move these get-renderables, model?
 const getRenderableHex = (
   region: Region,
-  { x, y, terrain, resource, beast, clan }: Hex,
+  { x, y, terrain, resource, beast, clan, warriors }: Hex,
 ): RenderData[0] => ({
   regionName: region.name,
   regionColor: region.color,
@@ -35,7 +36,7 @@ const getRenderableHex = (
       : undefined,
   },
   inLos: false,
-  unit: getUnit({ beast, clan }),
+  units: getUnits({ beast, clan, warriors }),
 })
 
 export const getRenderData = (
