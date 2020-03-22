@@ -34,7 +34,7 @@ export const insertResource = (hex: Hex) => {
 export const insertClan = (hex: Hex) => {
   hex.clan = { name: RNG.getItem(clans) }
   const warrior: Warrior = {
-    name: `Warriors of the ${hex.clan.name} clan`,
+    name: `${hex.clan.name}-clan warriors`,
     buffs: [],
   }
   hex.warriors = [warrior]

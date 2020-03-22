@@ -12,7 +12,7 @@ export const addToColor = (color: string, amount: number) =>
 export const multiplyColor = (color: string, amount: number) =>
   [...color].map((v, i) => (i > 0 ? multiplyChar(v, amount) : v)).join('')
 
-export const getRandomColor = (min: number = 0, max: number = 15) =>
+export const getRandomColor = (min = 0, max = 15) =>
   `#${Array(6)
     .fill(0)
     .map(_ => RNG.getUniformInt(min, max).toString(16))

@@ -1,17 +1,42 @@
 const path = require('path')
 const TerserPlugin = require('terser-webpack-plugin')
+const HtmlWebPackPlugin = require('html-webpack-plugin')
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin')
 
 module.exports = {
-  entry: './src/index.ts',
+  entry: './src/index.tsx',
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
-        use: 'ts-loader',
+        enforce: 'pre',
+        test: /\.(ts|tsx)$/,
         exclude: /node_modules/,
+        loader: 'eslint-loader',
+      },
+      {
+        test: /\.tsx?$/,
+        loader: 'babel-loader',
+        exclude: /node_modules/,
+      },
+      {
+        test: /\.html$/,
+        use: [
+          {
+            loader: 'html-loader',
+          },
+        ],
       },
     ],
   },
+  plugins: [
+    new HtmlWebPackPlugin({
+      template: './src/index.html',
+      filename: './index.html',
+    }),
+    new ForkTsCheckerWebpackPlugin({
+      eslint: true,
+    }),
+  ],
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
   },
@@ -19,12 +44,7 @@ module.exports = {
     minimize: true,
     minimizer: [new TerserPlugin()],
   },
-  output: {
-    filename: 'main.js',
-    path: path.resolve(__dirname, 'dist'),
-  },
   devServer: {
-    contentBase: path.join(__dirname, 'dist'),
     compress: true,
     port: 3000,
   },

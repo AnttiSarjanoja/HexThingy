@@ -41,13 +41,13 @@ export const initRegions = (amt: number): Region[] => {
     const retVal = [hexi]
     const takenNeighs =
       taken.length > 1
-        ? taken.reduce(
+        ? taken.reduce<Coord[]>(
             (a, c) => [...a, ...getNeighs(c).filter(isFree(taken.concat(a)))],
-            [] as Coord[],
+            [],
           )
-        : ([] as any[])
+        : []
 
-    for (var i = 0; i < amount - 1; i++) {
+    for (let i = 0; i < amount - 1; i++) {
       const newHex = getNewHex(retVal, takenNeighs)
       if (newHex) {
         retVal.push(newHex)

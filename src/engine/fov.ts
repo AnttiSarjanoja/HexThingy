@@ -61,7 +61,7 @@ export const getRenderData = (
   )
 
   fovHexes.forEach(({ x, y }) => {
-    fovi.compute(x, y, LOSDIST, (xx: any, yy: any, r: any, vis: any) => {
+    fovi.compute(x, y, LOSDIST, (xx, yy, _r, _vis) => {
       const hex = findHex(hexes, { x: xx, y: yy })
       if (hex) {
         retVal.find(val => val.x === xx && val.y === yy).inLos = true

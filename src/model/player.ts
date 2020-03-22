@@ -1,4 +1,5 @@
 import { Tribe } from './map'
+import { Order } from './order'
 
 type MessageType = 'default' | 'debug' | 'error'
 
@@ -16,4 +17,5 @@ export type Player = {
   name: string
   tribe: Tribe
   messages: Message[]
+  currentOrders: Order[]
 }

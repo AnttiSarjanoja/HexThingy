@@ -19,6 +19,7 @@ export const newGame = (users: string[]): Game => {
       name: u,
       tribe: map.tribes[i],
       messages: [],
+      currentOrders: [],
     })),
     turns: [{ orders: [], rngState }],
   }
@@ -35,6 +36,12 @@ export const addOrders = (game: Game, addedOrders: Order[]) => {
 export const endTurn = ({ map, turns, players }: Game) => {
   const currentTurn = turns[turns.length - 1]
   console.debug('processing orders', currentTurn)
+
+  players.forEach(p => {
+    currentTurn.orders.push(...p.currentOrders)
+    p.currentOrders = []
+  })
+
   currentTurn.orders.forEach(o => {
     // TODO: Handling different types
     const from = o.payload.from

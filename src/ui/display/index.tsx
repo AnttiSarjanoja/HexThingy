@@ -1,5 +1,6 @@
 // TODO: Needs wrapper for Display to switch between rot and pixi
 
+import React, { useRef, useEffect } from 'react'
 import { Display } from 'rot-js'
 import { addToColor, multiplyColor } from '../../helpers/color'
 import { RenderData } from '../types'
@@ -59,8 +60,8 @@ export const renderTerrains = (display: Display, data: RenderData) =>
 export const colorBg = (display: Display) => {
   const { width, height } = display.getOptions()
   // color all background hexes
-  for (var y = 0; y < height; y++) {
-    for (var x = y % 2; x < width; x += 2) {
+  for (let y = 0; y < height; y++) {
+    for (let x = y % 2; x < width; x += 2) {
       display.draw(x, y, x + ',' + y, '#114', '#003')
     }
   }
@@ -72,4 +73,18 @@ export const newDisplay = (data: RenderData) => {
 
   const display = new Display({ ...displayOptions, width: maxX, height: maxY })
   return display
+}
+
+type Props = {
+  display: Display
+}
+
+export const DisplayWrapper = ({ display }: Props) => {
+  const wrapperRef = useRef(null)
+
+  useEffect(() => {
+    wrapperRef.current?.appendChild(display.getContainer())
+  }, [])
+
+  return <div ref={wrapperRef} />
 }

@@ -10,6 +10,9 @@ Maybe a game someday.
 
 ## TODO
 
+- Make everything as functional as possible (at least non-mutating)
+- Split code to client-shared-server
+- Monorepo with packages (lerna maybe only option?)
 - Data (jsons) away from bundle
 - Tribe model
   - Seen hexes (turn, contents)
@@ -26,10 +29,8 @@ Maybe a game someday.
 - Fine tune world creation
   - Creation context for avoiding duplicate Beast / Clan / Region names
 - PIXI.js hex rendering (replace Display)
-- ESLint + Husky
 - Unit testing
 - Commitlint
-- React for better UI
 
 ## Notes
 

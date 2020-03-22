@@ -53,16 +53,6 @@ export const getUiState = (display: Display, initialData: RenderData) => {
     },
     chosenHex: {
       value: undefined as any,
-      // listeners: [
-      //   () => {
-      //     const _ = {
-      //       map: () => {},
-      //       move: () => {
-      //         console.log('placed move', uiState.chosenHex.value)
-      //       },
-      //     }[uiState.inputMode.value]()
-      //   },
-      // ] as Function[],
       unset: () => {
         uiState.chosenHex.value = undefined
       },
@@ -71,7 +61,6 @@ export const getUiState = (display: Display, initialData: RenderData) => {
           ({ x: xx, y: yy }) => x === xx && y === yy,
         )
         uiState.chosenHex.value = hex
-        // uiState.chosenHex.listeners.forEach(fn => fn())
         uiState.render()
       },
     },

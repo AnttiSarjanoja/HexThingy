@@ -8,14 +8,22 @@ export function handleKeyDown(uiState: UIState, actions: GameActions) {
     t: () => actions.debug.toggleChosenTribe(),
     e: () => actions.endTurn(),
     m: () => {
-      if (uiState.chosenHex.value?.unit?.type === 'clan') {
+      // TODO: move is not working as supposed
+      if (uiState.chosenHex.value?.units?.some((u: any) => u.type === 'clan')) {
         uiState.inputMode.setter('move')
       }
     },
     Escape: () => uiState.inputMode.setter('map'),
   } as Record<string, VoidFunction>
 
-  document.addEventListener('keydown', ({ key }) => handlers[key]?.())
+  const listener = ({ key, repeat }: KeyboardEvent) => {
+    if (!repeat) {
+      handlers[key]?.()
+    }
+  }
+
+  document.addEventListener('keydown', listener)
+  return listener
 }
 
 export function handleDisplayMouseMove(uiState: UIState) {
@@ -34,13 +42,13 @@ export function handleDisplayMouseClick(
       uiState.chosenHex.setWithCoords({ x, y })
     },
     move: (x: number, y: number) => {
-      console.log(uiState.chosenHex.value)
       const { x: fromX, y: fromY } = uiState.chosenHex.value
       const target = uiState.data.find(
         ({ x: xx, y: yy }) => x === xx && y === yy,
       )
       if (
-        uiState.chosenHex.value?.unit?.type === 'clan' &&
+        // TODO: Enable moving warriors too
+        uiState.chosenHex.value?.units.some((u: any) => u.type === 'clan') &&
         areNeighs({ x, y }, { x: fromX, y: fromY }) &&
         !target.units.length
       ) {
