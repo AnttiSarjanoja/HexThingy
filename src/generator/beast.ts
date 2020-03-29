@@ -1,9 +1,10 @@
 import { RNG } from 'rot-js'
-import infix from '../../data/beast-name-infix.json'
-import prefix from '../../data/beast-name-prefix.json'
-import suffix from '../../data/beast-name-suffix.json'
 import { Beast, beastTypes } from '../model/beast'
-import beastData from '../../data/beasts.json'
+
+// TODO: Dynamic imports
+import data from '../../data/beasts.json'
+
+const { prefix, infix, suffix } = data.names
 
 // TODO: Move to creation context
 // TODO: Gah, this will run out of names in most cases
@@ -15,8 +16,8 @@ const getName = (type: Beast['type']) => {
     [RNG.getItem(prefix), RNG.getItem(infix), RNG.getItem(suffix)].join('') :
     [RNG.getItem(prefix), RNG.getItem(suffix)].join('')
   const epithet: string = RNG.getItem(
-    (beastData as any)[type].epithets
-      .concat((beastData as any).default.epithets)
+    (data.names.epithets as any)[type]
+      .concat(data.names.epithets.default)
       .filter((v: string) => usedEpithets.indexOf(v) === -1),
   )
   usedEpithets.push(epithet)

@@ -1,84 +1,130 @@
 {
-  "default": {
-    "epithets": [
-      "Black-striped",
-      "Chromatic",
-      "Pale-one",
-      "Three-eyed",
-      "Five-headed",
-      "Endless",
-      "Eyeless",
-      "Moon-gazer",
-      "Bone-collector",
-      "Forked-tails",
-      "Rotten-death",
-      "Old-as-time"
-    ]
-  },
-  "Ziz-ann": {
-    "epithets": [
-      "Red-beak",
-      "High-Soaring",
-      "Lightning",
-      "Death-claws",
-      "Deafening-scream",
-      "Doom-bat",
-      "Four-wings",
-      "Sky-runner",
-      "Sun-glider"
-    ]
-  },
-  "Behem-ann": {
-    "epithets": [
-      "Blood-Tusk",
-      "Six-legs",
-      "Club-tail",
-      "Five-horned",
-      "Quake-hoofs",
-      "Mother-of-thousands",
-      "Mountain-tall",
-      "Stoneskin",
-      "Gold-antlers",
-      "Living-tree"
-    ]
-  },
-  "Neth-ann": {
-    "epithets": [
-      "Darkness-that-stares",
-      "King-lion",
-      "Thousand-teeth",
-      "Venom-fang",
-      "Spinner-of-death",
-      "Bottomless-maw",
-      "First-wolf",
-      "Silver-bear"
-    ]
-  },
-  "Nun-ann": {
-    "epithets": [
-      "Mirage",
-      "Hidden-in-fog",
-      "Mirror-Scaled",
-      "Poison-breath",
-      "Ink-spitter",
-      "Coral-skin",
-      "Hundred-tentacles",
-      "Earth-serpent",
-      "Dream-singer",
-      "River-drowner"
-    ]
-  },
-  "Baas-set": {
-    "epithets": [
-      "Chimaira",
-      "Glowing",
-      "Formless",
-      "Faceless",
-      "Shadow",
-      "Dust-skull",
-      "Whisperer-in-abyss",
-      "Star-skin",
-      "Unliving"
-    ]
+  "types": ["Ziz-ann", "Behem-ann", "Neth-ann", "Nun-ann", "Baas-set"],
+  "names": {
+    "prefix": [
+      "Adr",
+      "Amm",
+      "Ax",
+      "Ba",
+      "Bal",
+      "Bu",
+      "Caco",
+      "Dis",
+      "Erin",
+      "Gom",
+      "Guh",
+      "Maal",
+      "Mal",
+      "Man",
+      "Mel",
+      "Mor",
+      "Nyx",
+      "Okko",
+      "Scy",
+      "Ukob",
+      "Voh",
+      "Vuul",
+      "Xaph",
+      "Yeen"
+    ],
+    "infix": ["el", "er", "ael", "aur", "ha"],
+    "suffix": [
+      "ach",
+      "ann",
+      "arog",
+      "assu",
+      "ax",
+      "bera",
+      "culus",
+      "deus",
+      "dom",
+      "ekh",
+      "gax",
+      "ifer",
+      "onn",
+      "ory",
+      "ox",
+      "ozok",
+      "phas",
+      "roth",
+      "thoth",
+      "totl",
+      "to",
+      "ubus",
+      "uth",
+      "zrou"
+    ],
+    "epithets": {
+      "default": [
+        "Black-striped",
+        "Chromatic",
+        "Pale-one",
+        "Three-eyes",
+        "Five-headed",
+        "Endless",
+        "Eyeless",
+        "Moon-gazer",
+        "Bone-collector",
+        "Seven-tails",
+        "Rotten-death",
+        "Old-as-time",
+        "Ever-growing"
+      ],
+      "Ziz-ann": [
+        "Red-beak",
+        "High-Soaring",
+        "Lightning",
+        "Death-claws",
+        "Deafening-scream",
+        "Doom-bat",
+        "Four-wings",
+        "Sky-runner",
+        "Sun-glider"
+      ],
+      "Behem-ann": [
+        "Blood-Tusk",
+        "Six-legs",
+        "Hammer-tail",
+        "Five-horned",
+        "Quake-hoofs",
+        "Mother-of-thousands",
+        "Mountain-tall",
+        "Stoneskin",
+        "Gold-antlers",
+        "Living-tree"
+      ],
+      "Neth-ann": [
+        "Darkness-that-stares",
+        "King-lion",
+        "Thousand-teeth",
+        "Venom-fang",
+        "Spinner-of-death",
+        "Bottomless-maw",
+        "First-wolf",
+        "Silver-bear"
+      ],
+      "Nun-ann": [
+        "Mirage",
+        "Hidden-in-fog",
+        "Mirror-Scaled",
+        "Poison-breath",
+        "Ink-spitter",
+        "Coral-skin",
+        "Hundred-tentacles",
+        "Earth-serpent",
+        "Dream-singer",
+        "River-drowner"
+      ],
+      "Baas-set": [
+        "Chimaira",
+        "Glowing",
+        "Formless",
+        "Faceless",
+        "Dust-skull",
+        "Whisperer-in-abyss",
+        "Star-skin",
+        "Unliving"
+      ]
+    }
   }
 }

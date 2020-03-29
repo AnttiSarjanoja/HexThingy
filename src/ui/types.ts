@@ -5,13 +5,11 @@ export type UIOrder = {
 }
 
 export type GameActions = {
+  addOrder: (props: { uiOrder: UIOrder; orderData: any }) => void
   endTurn: VoidFunction
-  addOrder: (uiOrder: UIOrder, payload: any) => void
 
   // Only used with debug mode
-  debug: {
-    toggleChosenTribe: VoidFunction
-  }
+  debugToggleChosenTribe: VoidFunction
 }
 
 export type RenderData = Array<{
@@ -42,7 +40,10 @@ export type RenderData = Array<{
   }
 }>
 
-// TODO: More complex data for pixi-js
-// * units
-// * clans
-// *
+export type UIData = {
+  chosenHex?: { x: number; y: number }
+}
+
+// TODO: More complex data
+// * units (all info)
+// * clans (all info)

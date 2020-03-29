@@ -1,13 +1,14 @@
-import React, { ReactNode } from 'react'
+import React, { useContext } from 'react'
+import { UIContext } from './ui-state'
 
-type Props = {
-  children: ReactNode
+const DebugText = () => {
+  const { debug } = useContext(UIContext)
+
+  return (
+    <div id={'debug-texts'} style={{ whiteSpace: 'pre' }}>
+      {debug.hoverHex}
+    </div>
+  )
 }
-
-const DebugText = ({ children }: Props) => (
-  <div id={'debug-texts'} style={{ whiteSpace: 'pre' }}>
-    {children}
-  </div>
-)
 
 export default DebugText

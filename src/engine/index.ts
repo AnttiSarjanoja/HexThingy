@@ -1,3 +1,4 @@
+import { RNG } from 'rot-js'
 import { findHex } from '../helpers/hex'
 import { getMap } from '../helpers/map'
 import { Game } from '../model/game'
@@ -6,7 +7,6 @@ import { Tribe } from '../model/map'
 import { Order } from '../model/order'
 import { getRenderData } from './fov'
 import { messages } from './messages'
-import { RNG } from 'rot-js'
 
 // TODO: Insert other data? Map config?
 export const newGame = (users: string[]): Game => {
@@ -33,14 +33,17 @@ export const addOrders = (game: Game, addedOrders: Order[]) => {
 }
 
 // TODO: Validate turns
-export const endTurn = ({ map, turns, players }: Game) => {
+// TODO: Unmutate
+export const endTurn = (game: Game): Game => {
+  const { map, turns, players } = game
   const currentTurn = turns[turns.length - 1]
-  console.debug('processing orders', currentTurn)
 
   players.forEach(p => {
     currentTurn.orders.push(...p.currentOrders)
     p.currentOrders = []
   })
+
+  console.debug('processing orders', players, currentTurn)
 
   currentTurn.orders.forEach(o => {
     // TODO: Handling different types
@@ -60,4 +63,6 @@ export const endTurn = ({ map, turns, players }: Game) => {
   })
   const rngState = RNG.getState()
   turns.push({ orders: [], rngState })
+
+  return game
 }

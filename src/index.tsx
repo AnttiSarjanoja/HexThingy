@@ -1,11 +1,11 @@
-import { reducer, actionsWithDispatch, getInitialState } from './engine-wrapper'
-import UI from './ui'
+import React, { useEffect, useMemo, useReducer } from 'react'
 import ReactDOM from 'react-dom'
-import React, { useReducer, useEffect } from 'react'
+import { actionsWithDispatch, getInitialState, reducer } from './game-state'
+import UI from './ui'
 
 const App = () => {
   const [state, dispatch] = useReducer(reducer, getInitialState())
-  const actions = actionsWithDispatch(dispatch)
+  const actions = useMemo(() => actionsWithDispatch(dispatch), [dispatch])
 
   useEffect(() => {
     actions.newGame()
@@ -15,11 +15,7 @@ const App = () => {
     return <>Loading</>
   }
 
-  return (
-    <>
-      <UI data={state.renderData} actions={actions} />
-    </>
-  )
+  return <UI data={state.renderData} actions={actions} />
 }
 
 ReactDOM.render(<App />, document.getElementById('root'))
