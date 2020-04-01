@@ -17,16 +17,16 @@ const getUnits = ({ beast, clan, warriors }: Pick<Hex, 'beast' | 'clan' | 'warri
 
 // TODO: Where to move these get-renderables, model?
 const getRenderableHex = (
-  region: Region,
   { x, y, terrain, resource, beast, clan, warriors }: Hex,
+  region?: Region,
 ): RenderData[0] => ({
-  regionName: region.name,
-  regionColor: region.color,
+  regionName: region?.name,
+  regionColor: region?.color,
   ...{ x, y },
   terrain: {
-    type: terrain.type,
-    color: (terrainData as any)[terrain.type].color,
-    char: (terrainData as any)[terrain.type].char,
+    type: terrain,
+    color: (terrainData as any)[terrain].color,
+    char: (terrainData as any)[terrain].char,
     resource: resource
       ? {
           name: resource.name,
@@ -54,10 +54,13 @@ export const getRenderData = (
     },
   )
   const retVal = [] as RenderData
-  regions.forEach(r =>
-    r.hexes.forEach(h => {
-      retVal.push(getRenderableHex(r, h))
-    }),
+  hexes.forEach(h =>
+    retVal.push(
+      getRenderableHex(
+        h,
+        regions.find(r => r.hexes.some(hh => hh === h)),
+      ),
+    ),
   )
 
   fovHexes.forEach(({ x, y }) => {

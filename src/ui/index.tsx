@@ -3,7 +3,9 @@
 import React, { useEffect, useMemo, useReducer } from 'react'
 import DebugText from './debug-texts'
 import { DisplayWrapper } from './display'
-import { createDisplay } from './display/rot-js'
+// TODO: Supported for now, mb for later use too
+// import { createDisplay } from './display/rot-js'
+import { createDisplay } from './display/pixi-js'
 import { handleKeyDown, removeKeyDown } from './input-keys'
 import { reducer, actionsWithDispatch, getUiState, UIContext } from './ui-state'
 import { GameActions, RenderData } from './types'

@@ -29,9 +29,11 @@ Maybe a game someday.
   - Either store one big tree with partial serialization or make it fully serialized with a master list
 - Fine tune world creation
   - Creation context for avoiding duplicate Beast / Clan / Region names
-- PIXI.js hex rendering (replace Display)
-  - Really nice to have - PIXI.projection, 2D map trapezoid tilting OR 3D camera
 - Unit testing
+
+## Nice-to-have TODO
+
+- Really nice to have - PIXI.projection, 2D map trapezoid tilting OR 3D camera
 
 ## Notes
 

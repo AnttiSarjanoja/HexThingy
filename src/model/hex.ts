@@ -8,15 +8,18 @@ type Resource = {
   char: string
 }
 
-type Terrain = {
-  type: string
-  char: string
-}
+export type TerrainType =
+  | 'plains'
+  | 'forest'
+  | 'mountains'
+  | 'swamp'
+  | 'desert'
+  | 'sea'
 
 export type Hex = {
   x: number
   y: number
-  terrain: Terrain
+  terrain: TerrainType
   beast?: Beast
   clan?: Clan
   resource?: Resource

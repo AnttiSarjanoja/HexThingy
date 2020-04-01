@@ -13,8 +13,8 @@ export const getNeighHexes = ({ hexes }: { hexes: Hex[] }) => (hex: Hex) => {
 
 export const isHabitable = (h: Hex) =>
   h.resource?.type === 'foods' ||
-  h.terrain.type === 'forest' ||
-  h.terrain.type === 'plains'
+  h.terrain === 'forest' ||
+  h.terrain === 'plains'
 
-export const allowsLos = ({ terrain: { type } }: Hex) =>
-  type === 'plains' || type === 'desert'
+export const allowsLos = ({ terrain }: Hex) =>
+  terrain === 'plains' || terrain === 'desert' || terrain === 'sea'

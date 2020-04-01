@@ -8,6 +8,7 @@ const { prefix, infix, suffix } = data.names
 
 // TODO: Move to creation context
 // TODO: Gah, this will run out of names in most cases
+// ^- because of no creation context :I
 const usedEpithets: string[] = []
 
 const getName = (type: Beast['type']) => {

@@ -8,7 +8,7 @@ import { Coord } from '../common/types'
 import { REGION_HEXES, REGION_MIN } from '../constants'
 import { getRandomColor } from '../helpers/color'
 import { getNeighHexes, isHabitable } from '../helpers/hex'
-import { Hex } from '../model/Hex.js'
+import { Hex, TerrainType } from '../model/Hex.js'
 import { Region } from '../model/region'
 import { getBeast } from './beast'
 import { insertClan, insertResource } from './hex'
@@ -97,7 +97,7 @@ export const initRegions = (amt: number): Region[] => {
     hexes: coords.map(({ x, y }) => ({
       x,
       y,
-      terrain: { type: 'plains', char: '_' },
+      terrain: 'plains',
     })),
     color: getRandomColor(4, 9),
     name: '',
@@ -107,7 +107,7 @@ export const initRegions = (amt: number): Region[] => {
 
   const getAccessNeighHexes = (hex: Hex) =>
     getNeighHexes({ hexes: savedHexes })(hex).filter(
-      h => h.terrain.type === 'plains',
+      h => h.terrain === 'plains',
     )
 
   let notEnoughTerrainModified = true
@@ -120,14 +120,11 @@ export const initRegions = (amt: number): Region[] => {
     const chosen = usedNeighs.slice(0, RNG.getUniformInt(1, 3)).concat(randHex)
 
     chosen.forEach(h => {
-      h.terrain = { type: trn, char: (terrain as any)[trn].char }
+      h.terrain = trn as TerrainType
     })
 
     notEnoughTerrainModified =
-      savedHexes.reduce(
-        (a, c) => a + (c.terrain.type === 'plains' ? 1 : 0),
-        0,
-      ) >
+      savedHexes.reduce((a, c) => a + (c.terrain === 'plains' ? 1 : 0), 0) >
       savedHexes.length / 3
   }
 
@@ -140,16 +137,16 @@ export const populateRegion = (region: Region) => {
   // Get name
   const trn = Object.entries(
     hexes
-      .map(h => h.terrain.type)
+      .map(h => h.terrain)
       .reduce((a, c) => ({ ...a, [c]: a[c] ? a[c] + 1 : 1 }), {} as any),
   )
   trn.sort((a, b) => (a[1] < b[1] ? 1 : 0))
   region.name = `The ${RNG.getItem(regionPrefix)} ${trn[0][0]}`
 
   // Insert region beast on random hex, non-plains preferred
-  const freePlains = RNG.getItem(hexes.filter(h => h.terrain.type === 'plains'))
+  const freePlains = RNG.getItem(hexes.filter(h => h.terrain === 'plains'))
   const beastHex = RNG.getItem(
-    hexes.filter(h => h.terrain.type !== 'plains').concat(freePlains || []),
+    hexes.filter(h => h.terrain !== 'plains').concat(freePlains || []),
   )
   const beast = getBeast()
   beastHex.beast = beast

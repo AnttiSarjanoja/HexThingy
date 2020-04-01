@@ -5,12 +5,16 @@ import { REGIONS_PER_PLAYER, REGIONS_BASE_AMOUNT } from '../constants'
 import prefix from '../../data/region-prefix.json'
 import suffix from '../../data/map-suffix.json'
 import { RNG } from 'rot-js'
+import { getSeaHexes } from './hex'
 
 export const generateMap = (playerAmount: number): GameMap => {
   const regions = initRegions(
     playerAmount * REGIONS_PER_PLAYER + REGIONS_BASE_AMOUNT,
   ).map(populateRegion)
-  const hexes = regions.reduce((a, c) => [...a, ...c.hexes], [] as Hex[])
+
+  const landHexes = regions.reduce((a, c) => [...a, ...c.hexes], [] as Hex[])
+  const seaHexes = getSeaHexes(landHexes)
+  const hexes = landHexes.concat(seaHexes)
 
   // NOTE: regions are generated from [0,0] so the hex coordinates must be manually configured above zero
   const minX = hexes.reduce((a, c) => (c.x < a ? c.x : a), 0)

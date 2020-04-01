@@ -1,4 +1,5 @@
 {
+  "types": ["plains", "forest", "mountains", "swamp", "desert", "sea"],
   "rng": {
     "plains": 0,
     "forest": 3,
@@ -83,6 +84,10 @@
       "riches": ["papyrus"],
       "powers": ["spirits", "incense", "bloodmoss", "geyssir"]
     }
+  },
+  "sea": {
+    "char": "≈",
+    "color": "#004"
   },
   "coastal": {
     "foods": ["fish", "clams"],

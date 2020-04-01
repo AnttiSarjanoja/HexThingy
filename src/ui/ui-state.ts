@@ -33,6 +33,9 @@ const actionTypes = {
   CHANGE_RENDER_MODE: 'change-render-mode',
   CANCEL_CURRENT: 'cancel-current',
   ADDING_MOVE_ORDER: 'add-move-order',
+  CAMERA_MOVE: 'camera-move',
+  CAMERA_ZOOM: 'camera-zoom',
+  CAMERA_ROTATE: 'camera-rotate',
   HEX_HOVER: 'hex-hover',
   HEX_CLICK: 'hex-click',
 } as const
@@ -58,6 +61,11 @@ export const actionsWithDispatch = (dispatch: (action: UIAction) => any) => {
     changeRenderMode: withDispatch(actionTypes.CHANGE_RENDER_MODE),
     cancelCurrent: withDispatch(actionTypes.CANCEL_CURRENT),
     addMoveOrder: withDispatch(actionTypes.ADDING_MOVE_ORDER),
+    cameraMove: withDispatchAndData<Coord>(actionTypes.CAMERA_MOVE),
+    cameraZoom: withDispatchAndData<{ delta: number }>(actionTypes.CAMERA_ZOOM),
+    cameraRotate: withDispatchAndData<{ delta: number }>(
+      actionTypes.CAMERA_ROTATE,
+    ),
     hexHover: withDispatchAndData<Coord>(actionTypes.HEX_HOVER),
     hexClick: withDispatchAndData<Coord>(actionTypes.HEX_CLICK),
   }
@@ -69,13 +77,14 @@ type PayloadOf<
 > = Parameters<ReturnType<typeof actionsWithDispatch>[T]>[0]
 
 const render = (renderState: UIState) => {
-  renderState.display?.colorBg()
   if (renderState.renderMode === 'regions') {
     renderState.display?.renderMks(renderState.data, {
       chosenHex: renderState.chosenHex,
     })
   } else if (renderState.renderMode === 'terrain') {
-    renderState.display?.renderTerrains(renderState.data)
+    renderState.display?.renderTerrains(renderState.data, {
+      chosenHex: renderState.chosenHex,
+    })
   }
   return renderState
 }
@@ -100,6 +109,21 @@ export const reducer = (state: UIState, { type, payload }: UIAction) => {
         renderMode: getNextRenderMode(state.renderMode),
       }
       return render(retVal)
+    },
+    [actionTypes.CAMERA_MOVE]: () => {
+      const { x, y } = payload as PayloadOf<'cameraMove'>
+      state.display.cameraMove({ x, y })
+      // No return!
+    },
+    [actionTypes.CAMERA_ZOOM]: () => {
+      const { delta } = payload as PayloadOf<'cameraZoom'>
+      state.display.cameraZoom({ delta })
+      // No return!
+    },
+    [actionTypes.CAMERA_ROTATE]: () => {
+      const { delta } = payload as PayloadOf<'cameraRotate'>
+      state.display.cameraRotate({ delta })
+      // No return!
     },
     [actionTypes.HEX_HOVER]: () => {
       const { x, y } = payload as PayloadOf<'hexHover'>
@@ -152,5 +176,5 @@ export const reducer = (state: UIState, { type, payload }: UIAction) => {
   }
 
   const newState = handler[type]()
-  return newState
+  return newState || state
 }

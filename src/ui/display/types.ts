@@ -2,9 +2,11 @@ import { RenderData, UIData } from '../types'
 
 export type GameDisplay = {
   getCanvas: () => HTMLElement
-  colorBg: VoidFunction
+  cameraMove: (delta: Coord) => void
+  cameraZoom: (delta: { delta: number }) => void
+  cameraRotate: (delta: { delta: number }) => void
   renderMks: (data: RenderData, uiData: UIData) => void
-  renderTerrains: (data: RenderData) => void
+  renderTerrains: (data: RenderData, uiData: UIData) => void
 }
 
 type Coord = {
