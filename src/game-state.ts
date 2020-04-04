@@ -1,4 +1,4 @@
-// TODO: This state is still written in a wrong way of thinking, getting RenderData really shouldn't be part of reducer
+// TODO: This state is still written in a wrong way of thinking, getting UIMapData really shouldn't be part of reducer
 
 import set from 'lodash/fp/set'
 import { endTurn, initGameForPlayer, newGame } from './engine'
@@ -6,13 +6,13 @@ import { findHex } from './helpers/hex'
 import { Game } from './model/game'
 import { Hex } from './model/hex'
 import { OrderType } from './model/order'
-import { RenderData, UIOrder } from './ui/types'
+import { UIMapData, UIOrder, UIPlayerData } from './ui/types'
 
 // NOTE: All stuff below should be easily exported to redux
 export const getInitialState = () => ({
   playerIndex: 0,
   game: undefined as Game | undefined,
-  renderData: undefined as RenderData | undefined,
+  renderData: {} as { mapData: UIMapData; playerData: UIPlayerData },
 })
 
 type State = ReturnType<typeof getInitialState>
@@ -64,18 +64,23 @@ const refreshRenderData = (state: State) => {
   }
 
   const currentPlayer = state.game.players[state.playerIndex]
-  const renderData = initGameForPlayer(currentPlayer.tribe, state.game)
+  const mapData = initGameForPlayer(currentPlayer.tribe, state.game)
   Object.values(currentPlayer.currentOrders).forEach(({ target, type }) => {
     const { x: ox, y: oy } = target as Hex
-    renderData.find(({ x, y }) => x === ox && y === oy).order = {
+    mapData.find(({ x, y }) => x === ox && y === oy).order = {
       type,
     }
   })
 
+  const playerData = { leaders: currentPlayer.tribe.leaders }
+
   return {
     ...state,
-    renderData,
-  }
+    renderData: {
+      mapData,
+      playerData,
+    },
+  } as State
 }
 
 // const getOrderKey = ({ type, x, y }: UIOrder) => [type, x, y].join('-')

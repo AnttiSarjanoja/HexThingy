@@ -3,6 +3,10 @@ import ReactDOM from 'react-dom'
 import { actionsWithDispatch, getInitialState, reducer } from './game-state'
 import UI from './ui'
 
+const uiConfig = {
+  displayType: 'pixi' as const,
+}
+
 const App = () => {
   const [state, dispatch] = useReducer(reducer, getInitialState())
   const actions = useMemo(() => actionsWithDispatch(dispatch), [dispatch])
@@ -11,11 +15,18 @@ const App = () => {
     actions.newGame()
   }, [])
 
-  if (!state.renderData) {
+  if (!state.renderData.mapData) {
     return <>Loading</>
   }
 
-  return <UI data={state.renderData} actions={actions} />
+  return (
+    <UI
+      actions={actions}
+      config={uiConfig}
+      mapData={state.renderData.mapData}
+      playerData={state.renderData.playerData}
+    />
+  )
 }
 
 ReactDOM.render(<App />, document.getElementById('root'))

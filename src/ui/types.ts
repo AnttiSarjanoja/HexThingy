@@ -12,7 +12,11 @@ export type GameActions = {
   debugToggleChosenTribe: VoidFunction
 }
 
-export type RenderData = Array<{
+export type UIPlayerData = {
+  leaders: Array<{ name: string }>
+}
+
+export type UIMapData = Array<{
   x: number
   y: number
   inLos: boolean
@@ -40,7 +44,7 @@ export type RenderData = Array<{
   }
 }>
 
-export type UIData = {
+export type UIMapInteractions = {
   chosenHex?: { x: number; y: number }
 }
 

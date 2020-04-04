@@ -1,5 +1,5 @@
 import { Display } from 'rot-js'
-import { RenderData } from '../../types'
+import { UIMapData } from '../../types'
 import { GameDisplayCreator } from '../types'
 import { addToColor, multiplyColor } from './helpers'
 
@@ -76,7 +76,7 @@ export const createDisplay: GameDisplayCreator = ({
         }
       })
     },
-    renderTerrains: (data: RenderData) => {
+    renderTerrains: (data: UIMapData) => {
       colorBg()
       data.forEach(data => {
         const { x, y, inLos, terrain } = data

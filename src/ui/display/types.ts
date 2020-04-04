@@ -1,12 +1,12 @@
-import { RenderData, UIData } from '../types'
+import { UIMapData, UIMapInteractions } from '../types'
 
 export type GameDisplay = {
   getCanvas: () => HTMLElement
   cameraMove: (delta: Coord) => void
   cameraZoom: (delta: { delta: number }) => void
   cameraRotate: (delta: { delta: number }) => void
-  renderMks: (data: RenderData, uiData: UIData) => void
-  renderTerrains: (data: RenderData, uiData: UIData) => void
+  renderMks: (data: UIMapData, uiData: UIMapInteractions) => void
+  renderTerrains: (data: UIMapData, uiData: UIMapInteractions) => void
 }
 
 type Coord = {
@@ -15,7 +15,7 @@ type Coord = {
 }
 
 export type GameDisplayCreator = (props: {
-  data: RenderData
+  data: UIMapData
   onMouseMove: ({ x, y }: Coord) => void
   onMouseClick: ({ x, y }: Coord) => void
 }) => GameDisplay

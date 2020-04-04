@@ -42,6 +42,7 @@ export const getMap = (playerAmt: number): GameMap => {
   map.tribes = startingLocations.map((r, i) => ({
     name: `Tribe ${i}`,
     clans: r.hexes.filter(h => h.clan).map(h => h.clan),
+    leaders: [{ name: `Leader ${i}0` }, { name: `Leader ${i}1` }],
   }))
 
   console.log(`Starting locations`, ...map.tribes)

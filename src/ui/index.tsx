@@ -3,30 +3,37 @@
 import React, { useEffect, useMemo, useReducer } from 'react'
 import DebugText from './debug-texts'
 import { DisplayWrapper } from './display'
-// TODO: Supported for now, mb for later use too
-// import { createDisplay } from './display/rot-js'
-import { createDisplay } from './display/pixi-js'
+import { createDisplay as createPixiDisplay } from './display/pixi-js'
+import { createDisplay as createRotDisplay } from './display/rot-js' // NOTE: Supported for now, mb for later use too
 import { handleKeyDown, removeKeyDown } from './input-keys'
-import { reducer, actionsWithDispatch, getUiState, UIContext } from './ui-state'
-import { GameActions, RenderData } from './types'
+import Leaders from './leaders'
+import { GameActions, UIMapData, UIPlayerData } from './types'
+import { actionsWithDispatch, getUiState, reducer, UIContext } from './ui-state'
 
 type Props = {
-  data: RenderData
+  playerData: UIPlayerData
+  mapData: UIMapData
   actions: GameActions
+  config: {
+    displayType: 'rot' | 'pixi'
+  }
 }
 
-const UI = ({ data, actions }: Props) => {
-  const [uiState, dispatch] = useReducer(reducer, getUiState(actions))
+const UI = ({ actions, config, mapData, playerData }: Props) => {
+  const [uiState, dispatch] = useReducer(
+    reducer,
+    getUiState(actions, playerData),
+  )
   const uiActions = actionsWithDispatch(dispatch)
 
   const display = useMemo(
     () =>
-      createDisplay({
-        data,
+      (config.displayType === 'rot' ? createRotDisplay : createPixiDisplay)({
+        data: mapData,
         onMouseClick: uiActions.hexClick,
         onMouseMove: uiActions.hexHover,
       }),
-    [],
+    [config],
   )
 
   useEffect(() => {
@@ -38,8 +45,8 @@ const UI = ({ data, actions }: Props) => {
   }, [])
 
   useEffect(() => {
-    uiActions.updateRenderData(data)
-  }, [data])
+    uiActions.updateRenderData(mapData)
+  }, [mapData])
 
   useEffect(() => {
     while (uiState.gameActionsQueue.length) {
@@ -52,6 +59,7 @@ const UI = ({ data, actions }: Props) => {
     <UIContext.Provider value={uiState}>
       <DisplayWrapper canvas={display.getCanvas()} />
       <DebugText />
+      <Leaders uiActions={uiActions} />
     </UIContext.Provider>
   )
 }

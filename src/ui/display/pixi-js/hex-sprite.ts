@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js'
 import { HEX_HEIGHT, HEX_WIDTH } from './constants'
 import { colorToNumber, multiplyColor, addToColor } from './helpers'
-import { RenderData } from '../../types'
+import { UIMapData } from '../../types'
 
 const coordsToPos = ({ x, y }: { x: number; y: number }) => ({
   x: y * HEX_WIDTH * 0.75, // :(
@@ -12,7 +12,7 @@ const dimNotSeen = (color: string) => multiplyColor(color, 0.3)
 
 // TODO: Types
 export const getPixiHex = (
-  { x, y, inLos, regionColor, terrain, units }: RenderData[0],
+  { x, y, inLos, regionColor, terrain, units }: UIMapData[0],
   hexTexture: PIXI.Texture,
   onMouseClick: any,
   onMouseMove: any,
@@ -91,7 +91,7 @@ export const getPixiHex = (
 }
 
 export const updateUnits = (
-  data: RenderData[0],
+  data: UIMapData[0],
   hex: ReturnType<typeof getPixiHex>,
 ) => {
   // TODO: Really a hax for now, maybe units should be on different level than hexes?
@@ -119,7 +119,7 @@ export const updateUnits = (
 }
 
 export const renderWithRegionColors = (
-  data: RenderData[0],
+  data: UIMapData[0],
   hex: ReturnType<typeof getPixiHex>,
 ) => {
   const { inLos, regionColor, terrain } = data
@@ -145,7 +145,7 @@ export const renderWithRegionColors = (
 }
 
 export const renderWithTerrainColors = (
-  data: RenderData[0],
+  data: UIMapData[0],
   hex: ReturnType<typeof getPixiHex>,
 ) => {
   const { inLos, terrain } = data

@@ -1,9 +1,9 @@
-import React from 'react'
 import set from 'lodash/fp/set'
+import React from 'react'
+import { areNeighs } from '../common/helpers'
 import { Coord } from '../common/types'
 import { GameDisplay } from './display/types'
-import { RenderData, GameActions } from './types'
-import { areNeighs } from '../common/helpers'
+import { GameActions, UIPlayerData, UIMapData } from './types'
 
 type InputMode = 'map' | 'move'
 
@@ -12,21 +12,26 @@ type RenderMode = typeof renderModes[number]
 const getNextRenderMode = (mode: RenderMode) =>
   renderModes[(renderModes.findIndex(m => m === mode) + 1) % renderModes.length]
 
-export const getUiState = (gameActions: GameActions) => ({
+export const getUiState = (
+  gameActions: GameActions,
+  playerData: UIPlayerData,
+) => ({
   gameActions,
   gameActionsQueue: [] as VoidFunction[],
   debug: {} as { hoverHex?: string },
   display: undefined as GameDisplay | undefined,
-  data: undefined as RenderData | undefined,
+  mapData: undefined as UIMapData | undefined,
+  playerData,
   renderMode: 'regions' as RenderMode,
   inputMode: 'map' as InputMode,
-  hoverHex: undefined as RenderData[0] | undefined,
-  chosenHex: undefined as RenderData[0] | undefined,
+  hoverHex: undefined as UIMapData[0] | undefined,
+  chosenHex: undefined as UIMapData[0] | undefined,
+  chosenLeader: undefined as UIPlayerData['leaders'][0] | undefined,
 })
 
 export type UIState = ReturnType<typeof getUiState>
 
-export const UIContext = React.createContext(getUiState(undefined))
+export const UIContext = React.createContext(getUiState(undefined, undefined))
 
 const actionTypes = {
   UPDATE_DATA: 'update-render-data',
@@ -38,6 +43,7 @@ const actionTypes = {
   CAMERA_ROTATE: 'camera-rotate',
   HEX_HOVER: 'hex-hover',
   HEX_CLICK: 'hex-click',
+  LEADER_SELECT: 'leader-select',
 } as const
 
 type UIAction = {
@@ -57,7 +63,7 @@ export const actionsWithDispatch = (dispatch: (action: UIAction) => any) => {
     })
 
   return {
-    updateRenderData: withDispatchAndData<RenderData>(actionTypes.UPDATE_DATA),
+    updateRenderData: withDispatchAndData<UIMapData>(actionTypes.UPDATE_DATA),
     changeRenderMode: withDispatch(actionTypes.CHANGE_RENDER_MODE),
     cancelCurrent: withDispatch(actionTypes.CANCEL_CURRENT),
     addMoveOrder: withDispatch(actionTypes.ADDING_MOVE_ORDER),
@@ -68,6 +74,9 @@ export const actionsWithDispatch = (dispatch: (action: UIAction) => any) => {
     ),
     hexHover: withDispatchAndData<Coord>(actionTypes.HEX_HOVER),
     hexClick: withDispatchAndData<Coord>(actionTypes.HEX_CLICK),
+    leaderSelect: withDispatchAndData<{ name: string }>(
+      actionTypes.LEADER_SELECT,
+    ),
   }
 }
 
@@ -78,11 +87,11 @@ type PayloadOf<
 
 const render = (renderState: UIState) => {
   if (renderState.renderMode === 'regions') {
-    renderState.display?.renderMks(renderState.data, {
+    renderState.display?.renderMks(renderState.mapData, {
       chosenHex: renderState.chosenHex,
     })
   } else if (renderState.renderMode === 'terrain') {
-    renderState.display?.renderTerrains(renderState.data, {
+    renderState.display?.renderTerrains(renderState.mapData, {
       chosenHex: renderState.chosenHex,
     })
   }
@@ -92,24 +101,24 @@ const render = (renderState: UIState) => {
 export const reducer = (state: UIState, { type, payload }: UIAction) => {
   const handler = {
     [actionTypes.UPDATE_DATA]: () => {
-      const data = payload as PayloadOf<'updateRenderData'>
-      const retVal = { ...state, data }
+      const mapData = payload as PayloadOf<'updateRenderData'>
+      const retVal = { ...state, mapData }
       return render(retVal)
     },
     [actionTypes.ADDING_MOVE_ORDER]: () =>
       state.chosenHex ? { ...state, inputMode: 'move' } : state,
-    [actionTypes.CANCEL_CURRENT]: () => ({
-      ...state,
-      inputMode: 'map',
-      chosenHex: undefined,
-    }),
-    [actionTypes.CHANGE_RENDER_MODE]: () => {
-      const retVal = {
+    [actionTypes.CANCEL_CURRENT]: () =>
+      render({
+        ...state,
+        inputMode: 'map',
+        chosenHex: undefined,
+        chosenLeader: undefined,
+      }),
+    [actionTypes.CHANGE_RENDER_MODE]: () =>
+      render({
         ...state,
         renderMode: getNextRenderMode(state.renderMode),
-      }
-      return render(retVal)
-    },
+      }),
     [actionTypes.CAMERA_MOVE]: () => {
       const { x, y } = payload as PayloadOf<'cameraMove'>
       state.display.cameraMove({ x, y })
@@ -127,7 +136,7 @@ export const reducer = (state: UIState, { type, payload }: UIAction) => {
     },
     [actionTypes.HEX_HOVER]: () => {
       const { x, y } = payload as PayloadOf<'hexHover'>
-      const hex = state.data.find(({ x: xx, y: yy }) => xx === x && yy === y)
+      const hex = state.mapData.find(({ x: xx, y: yy }) => xx === x && yy === y)
       return set(
         ['debug', 'hoverHex'],
         hex ? JSON.stringify(hex, undefined, 2) : '',
@@ -135,7 +144,7 @@ export const reducer = (state: UIState, { type, payload }: UIAction) => {
     },
     [actionTypes.HEX_CLICK]: () => {
       const { x, y } = payload as PayloadOf<'hexClick'>
-      const hex = state.data.find(({ x: xx, y: yy }) => xx === x && yy === y)
+      const hex = state.mapData.find(({ x: xx, y: yy }) => xx === x && yy === y)
       const clickHandler = {
         map: () => ({ ...state, chosenHex: hex }),
         move: () => {
@@ -168,6 +177,13 @@ export const reducer = (state: UIState, { type, payload }: UIAction) => {
 
       const retVal = clickHandler[state.inputMode]()
       return render(retVal)
+    },
+    [actionTypes.LEADER_SELECT]: () => {
+      const { name } = payload as PayloadOf<'leaderSelect'>
+      return {
+        ...state,
+        chosenLeader: state.playerData.leaders.find(l => l.name === name),
+      }
     },
   } as Record<UIAction['type'], () => UIState>
 

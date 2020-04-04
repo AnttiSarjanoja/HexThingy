@@ -1,5 +1,5 @@
 import * as PIXI from 'pixi.js'
-import { RenderData } from '../../types'
+import { UIMapData } from '../../types'
 import { GameDisplayCreator } from '../types'
 import { HEX_HEIGHT, HEX_WIDTH } from './constants'
 import { colorToNumber } from './helpers'
@@ -56,13 +56,17 @@ export const createDisplay: GameDisplayCreator = ({
       0.75 +
     HEX_WIDTH * 0.25
 
-  const app = new PIXI.Application()
+  const app = new PIXI.Application({
+    resizeTo: window.document.body, // TODO: What to really use?
+  })
   const hexTexture = getHexTexture(app)
   const mapContainer = new PIXI.Container()
-  mapContainer.scale.x = 0.5
-  mapContainer.scale.y = 0.5
+  mapContainer.scale.set(0.3)
+  mapContainer.x = app.view.width / 2
+  mapContainer.y = app.view.height / 2
   mapContainer.pivot.x = maxWidth / 2
   mapContainer.pivot.y = maxHeight / 2
+
   app.stage.addChild(mapContainer)
 
   const pixiHexes = {} as Record<string, ReturnType<typeof getPixiHex>>
@@ -71,7 +75,7 @@ export const createDisplay: GameDisplayCreator = ({
     pixiHexes[d.x + ' ' + d.y] = pixiHex
     mapContainer.addChild(pixiHex.container)
   })
-  const toPixiHex = ({ x, y }: RenderData[0]) => pixiHexes[x + ' ' + y]
+  const toPixiHex = ({ x, y }: UIMapData[0]) => pixiHexes[x + ' ' + y]
 
   const chosenSprite = getChosenHexSprite()
 
@@ -89,6 +93,7 @@ export const createDisplay: GameDisplayCreator = ({
       mapContainer.angle += delta
     },
     renderMks: (data, { chosenHex }) => {
+      mapContainer.removeChild(chosenSprite)
       data.forEach(hex => {
         const { x, y } = hex
         const { container } = toPixiHex(hex)
@@ -98,7 +103,6 @@ export const createDisplay: GameDisplayCreator = ({
         const isChosen = x === chosenHex?.x && y === chosenHex?.y
         if (isChosen) {
           // TODO: Not very sophisticated but works for now
-          mapContainer.removeChild(chosenSprite)
           mapContainer.addChild(chosenSprite)
           chosenSprite.x = container.x
           chosenSprite.y = container.y

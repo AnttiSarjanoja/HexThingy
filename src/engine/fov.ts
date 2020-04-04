@@ -5,7 +5,7 @@ import { getClanHex } from '../helpers/clan'
 import { LOSDIST } from '../constants'
 import { Region } from '../model/region'
 import { Hex } from '../model/hex'
-import { RenderData } from '../ui/types'
+import { UIMapData } from '../ui/types'
 import terrainData from '../../data/terrain.json'
 
 // prettier-ignore
@@ -19,7 +19,7 @@ const getUnits = ({ beast, clan, warriors }: Pick<Hex, 'beast' | 'clan' | 'warri
 const getRenderableHex = (
   { x, y, terrain, resource, beast, clan, warriors }: Hex,
   region?: Region,
-): RenderData[0] => ({
+): UIMapData[0] => ({
   regionName: region?.name,
   regionColor: region?.color,
   ...{ x, y },
@@ -42,7 +42,7 @@ const getRenderableHex = (
 export const getRenderData = (
   currentTribe: Tribe,
   { regions, hexes }: GameMap,
-): RenderData => {
+): UIMapData => {
   const fovHexes = currentTribe.clans.map(getClanHex(hexes))
   const fovi = new FOV.PreciseShadowcasting(
     (x: number, y: number) => {
@@ -53,7 +53,7 @@ export const getRenderData = (
       topology: 6,
     },
   )
-  const retVal = [] as RenderData
+  const retVal = [] as UIMapData
   hexes.forEach(h =>
     retVal.push(
       getRenderableHex(
